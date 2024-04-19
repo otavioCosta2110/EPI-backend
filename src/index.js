@@ -1,8 +1,8 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from 'express';
+import { json } from 'body-parser';
 
 const app = express();
-app.use(bodyParser.json());
+app.use(json());
 
 app.get('/', (req, res) => {
   res.send('Hello World');
