@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/otavioCosta2110/EPI-backend#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
     "nodemon": "^3.1.0"
   }
 }
