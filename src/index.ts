@@ -1,6 +1,6 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const userRouter = require('./routes/userRoutes');
+import express from 'express';
+import bodyParser from 'body-parser';
+import userRoutes from './routes/userRoutes';
 
 const app = express();
 app.use(bodyParser.json());
@@ -12,7 +12,7 @@ app.get('/a', (req, res) => {
   res.send('Hello World');
 });
 
-app.use('/user', userRouter);
+app.use('/user', userRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
