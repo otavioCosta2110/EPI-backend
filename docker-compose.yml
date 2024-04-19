@@ -1,0 +1,34 @@
+services:
+
+  database:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASS
+    ports:
+      - "$DB_PORT:$DB_PORT"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+    command: npm start
+    expose: 
+      - '3000:3000'
+    ports: 
+      - '3000:3000'
+    volumes:
+      - .:/usr/node/app
+    env_file:
+      - .env
+    depends_on:
+      - database
+
+
+volumes:
+  data:
+    driver: local
