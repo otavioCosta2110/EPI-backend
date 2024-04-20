@@ -6,8 +6,20 @@ export default class UserRepository {
 
   constructor() {
   }
-  getUsers = (): any => {
-    
+  getUsers = async (): Promise<UserModel[]> => {
+    const result = await pool.query('SELECT * FROM users');
+    const users: UserModel[] = [];
+    for (const row of result.rows) {
+      const user: UserModel = {
+        id: row.id,
+        name: row.name,
+        email: row.email,
+        password: row.password,
+        role: row.role
+      };
+      users.push(user);
+    }
+    return users;
   }
 
   createUser = async (user: UserModel): Promise<UserModel> => {
