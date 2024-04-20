@@ -16,6 +16,15 @@ export default class UserServices {
     return users;
   }
   create = async (user: any) : Promise<UserModel> => {
+    if (!user.email || !user.password || !user.name || !user.role) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(user.email) === false) {
+      throw new Error("Invalid email");
+    }
+    if(isValidPassword(user.password) === false) {
+      throw new Error("Invalid password");
+    }
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const userID = uuidv4();
     const newUser = new UserModel(userID, user.name, user.email, hashedPassword, user.role);
@@ -23,6 +32,12 @@ export default class UserServices {
 
     return createdUser;
   }
-  
 }
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPassword(password: string) {
+  return /^(?=.*[a-zA-Z0-9])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/.test(password);
+}
