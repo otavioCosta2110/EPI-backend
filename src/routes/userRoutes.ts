@@ -11,5 +11,7 @@ router.get('/getusers', userController.getUsers);
 router.post('/create', userController.createUser);
 router.post('/login', userController.login);
 router.get('/loggeduser', userController.loggedUser);
+router.put('/updatepassword', userController.updatePassword);
+router.put('/updatename', userController.updateName);
 
 export default router;

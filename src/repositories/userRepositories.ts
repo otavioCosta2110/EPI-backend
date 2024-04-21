@@ -51,4 +51,30 @@ export default class UserRepository {
     return createdUser;
   }
 
+  updatePassword = async (email: string, password: string): Promise<UserModel> => {
+    const result = await pool.query('UPDATE users SET password = $1, updated_at = $2 WHERE email = $3 RETURNING *', [password, new Date(), email]);
+    const updatedUserRow = result.rows[0];
+    const updatedUser: UserModel = {
+      id: updatedUserRow.id,
+      name: updatedUserRow.name,
+      email: updatedUserRow.email,
+      password: updatedUserRow.password,
+      role: updatedUserRow.role
+    };
+    return updatedUser;
+  }
+  
+  updateName = async (email: string, name: string): Promise<UserModel> => {
+    const result = await pool.query('UPDATE users SET name = $1, updated_at = $2 WHERE email = $3 RETURNING *', [name, new Date(), email]);
+    const updatedUserRow = result.rows[0];
+    const updatedUser: UserModel = {
+      id: updatedUserRow.id,
+      name: updatedUserRow.name,
+      email: updatedUserRow.email,
+      password: updatedUserRow.password,
+      role: updatedUserRow.role
+    };
+    return updatedUser;
+  }
+
 }

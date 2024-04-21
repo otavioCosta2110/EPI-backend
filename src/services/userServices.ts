@@ -72,6 +72,40 @@ export default class UserServices {
     }
   }
 
+  updatePassword = async (email: string, password: string) =>{
+    if (!email || !password) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(email) === false) {
+      throw new Error("Invalid email");
+    }
+    if(isValidPassword(password) === false) {
+      throw new Error("Invalid password");
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedUser = await this.userRepository.updatePassword(email, hashedPassword);
+    return updatedUser;
+  }
+
+  updateName = async (email: string, name: string, password: string) =>{
+    if (!email || !name || !password) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(email) === false) {
+      throw new Error("Invalid email");
+    }
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const isValid = await validatePassword(password, user.password);
+    if (!isValid) {
+      throw new Error("Invalid password");
+    }
+    const updatedUser = await this.userRepository.updateName(email, name);
+    return updatedUser;
+  }
+
 }
 
 function isValidEmail(email: string) {
@@ -86,3 +120,6 @@ async function validatePassword(password: string, hashedPassword: string): Promi
   const result = await bcrypt.compare(password, hashedPassword)
   return result;
 }
+
+
+

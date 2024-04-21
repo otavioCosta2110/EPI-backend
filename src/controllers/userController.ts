@@ -54,5 +54,25 @@ import UserServices from "../services/userServices";
      }
    }
 
+    updatePassword = async (req: Request, res: Response) => {
+      try {
+        const { email, password } = req.body;
+        const updatedUser = await this.userServices.updatePassword(email, password);
+        res.status(200).json({data: updatedUser});
+      }catch (error: any) {
+        res.status(500).json({error: error.message});
+      }
+    }
 
+    updateName = async (req: Request, res: Response) => {
+      try {
+        const { email, name, password } = req.body;
+        const updatedUser = await this.userServices.updateName(email, name, password);
+        res.status(200).json({data: updatedUser});
+      }catch (error: any) {
+        res.status(500).json({error: error.message});
+      }
+    }
  }
+
+
