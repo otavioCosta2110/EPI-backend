@@ -13,5 +13,6 @@ router.post('/login', userController.login);
 router.get('/loggeduser', userController.loggedUser);
 router.put('/updatepassword', userController.updatePassword);
 router.put('/updatename', userController.updateName);
+router.delete('/delete', userController.deleteUser);
 
 export default router;

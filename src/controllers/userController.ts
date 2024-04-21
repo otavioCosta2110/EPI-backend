@@ -73,6 +73,16 @@ import UserServices from "../services/userServices";
         res.status(500).json({error: error.message});
       }
     }
+
+    deleteUser = async (req: Request, res: Response) => {
+      try {
+        const { email } = req.body;
+        const deletedUser = await this.userServices.deleteUser(email);
+        res.status(200).json({data: deletedUser});
+      }catch (error: any) {
+        res.status(500).json({error: error.message});
+      }
+    }
  }
 
 

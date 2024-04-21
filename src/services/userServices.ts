@@ -104,6 +104,22 @@ export default class UserServices {
     }
     const updatedUser = await this.userRepository.updateName(email, name);
     return updatedUser;
+    
+  }
+
+  deleteUser = async (email: string) =>{
+    if (!email) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(email) === false) {
+      throw new Error("Invalid email");
+    }
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const deletedUser = await this.userRepository.deleteUser(email);
+    return deletedUser;
   }
 
 }

@@ -76,5 +76,18 @@ export default class UserRepository {
     };
     return updatedUser;
   }
+  
+  deleteUser = async (email: string): Promise<UserModel> => {
+    const result = await pool.query('UPDATE users set deleted_at = $1 WHERE email = $2 RETURNING *', [new Date(), email]);
+    const deletedUserRow = result.rows[0];
+    const deletedUser: UserModel = {
+      id: deletedUserRow.id,
+      name: deletedUserRow.name,
+      email: deletedUserRow.email,
+      password: deletedUserRow.password,
+      role: deletedUserRow.role
+    };
+    return deletedUser;
+  }
 
 }
