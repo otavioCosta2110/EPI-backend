@@ -24,4 +24,35 @@ import UserServices from "../services/userServices";
        res.status(500).json({error: error.message});
      }
    }
+
+   login = async (req: Request, res: Response) => {
+     try {
+       const { email, password } = req.body;
+       const token = await this.userServices.login(email, password);
+       // aq ele coloca como cookie
+       res.cookie("jwt", token, {httpOnly: true});
+       res.status(200).json({data: token});
+     }catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+   }
+
+   loggedUser = async (req: Request, res: Response) => {
+     try {
+       // pega o token dos cookies
+       const token = req.cookies.jwt;
+       console.log(token);
+       if (!token) {
+         throw new Error("Token not found");
+       }
+       const decoded = await this.userServices.loggedUser(token);
+       res.status(200).json({data: decoded});
+
+     } catch (error: any) {
+       console.log(error)
+       throw new Error("Invalid token");
+     }
+   }
+
+
  }
