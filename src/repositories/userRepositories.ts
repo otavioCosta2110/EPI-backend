@@ -54,6 +54,11 @@ export default class UserRepository {
   updatePassword = async (email: string, password: string): Promise<UserModel> => {
     const result = await pool.query('UPDATE users SET password = $1, updated_at = $2 WHERE email = $3 RETURNING *', [password, new Date(), email]);
     const updatedUserRow = result.rows[0];
+    if (result.rows.length === 0) {
+      throw new Error("User not found");
+    }else if(updatedUserRow.deleted_at) {
+      throw new Error("User not found");
+    }
     const updatedUser: UserModel = {
       id: updatedUserRow.id,
       name: updatedUserRow.name,
@@ -67,6 +72,9 @@ export default class UserRepository {
   updateName = async (email: string, name: string): Promise<UserModel> => {
     const result = await pool.query('UPDATE users SET name = $1, updated_at = $2 WHERE email = $3 RETURNING *', [name, new Date(), email]);
     const updatedUserRow = result.rows[0];
+    if(updatedUserRow.deleted_at) {
+      throw new Error("User not found");
+    }
     const updatedUser: UserModel = {
       id: updatedUserRow.id,
       name: updatedUserRow.name,
