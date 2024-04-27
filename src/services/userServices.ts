@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import UserModel from "../models/userModel";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import UserRepository from "../repositories/userRepositories";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -8,7 +8,8 @@ export default class UserServices {
 
   userRepository = new UserRepository()
 
-  constructor() {
+  constructor(userRepository: UserRepository) {
+    this.userRepository = userRepository;
   }
 
   getUsers = async () => {
@@ -26,7 +27,13 @@ export default class UserServices {
     if(isValidPassword(user.password) === false) {
       throw new Error("Invalid password");
     }
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    console.log(user)
+    const userExists = await this.userRepository.getUserByEmail(user.email);
+    if (userExists) {
+      throw new Error("User already exists");
+    }
+    const hashedPassword = await bcrypt.hash(user.password, 9);
     const userID = uuidv4();
     const newUser = new UserModel(userID, user.name, user.email, hashedPassword, user.role);
     const createdUser = await this.userRepository.createUser(newUser);

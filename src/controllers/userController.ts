@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import UserServices from "../services/userServices";
+import UserRepository from "../repositories/userRepositories";
 
  export default class UserController {
-   userServices = new UserServices();
+   userRepositories = new UserRepository();
+   userServices = new UserServices(this.userRepositories);
 
    constructor() {
    }

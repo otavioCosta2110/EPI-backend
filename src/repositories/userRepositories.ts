@@ -22,10 +22,10 @@ export default class UserRepository {
     return users;
   }
 
-  getUserByEmail = async (email: string): Promise<UserModel> => {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+  getUserByEmail = async (email: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL', [email]);
     if (result.rows.length === 0) {
-      throw new Error("User not found");
+      return null;
     }
     const userRow = result.rows[0];
     const user: UserModel = {

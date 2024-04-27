@@ -12,6 +12,7 @@ services:
       - "$DB_PORT:$DB_PORT"
     volumes:
       - ./data:/var/lib/postgresql/data
+    network_mode: "host"
 
   web:
     build:
@@ -27,6 +28,7 @@ services:
       - .env
     depends_on:
       - database
+    network_mode: "host"
 
 
 volumes:
