@@ -13,6 +13,7 @@ describe('UserServices', () => {
     UserRepository.prototype.createUser = jest.fn();
     UserRepository.prototype.getUserByEmail = jest.fn();
     UserRepository.prototype.updateName = jest.fn();
+    UserRepository.prototype.deleteUser = jest.fn();
     userServices = new UserServices(userRepository);
   });
 
@@ -88,7 +89,7 @@ describe('UserServices', () => {
     it('should update the name of an existing user', async () => {
       const user = {
         email: 'test@example.com',
-        password: 'newPassword12$',
+        password: 'password12$',
         name: 'Test User',
         role: 'user'
       };
@@ -119,5 +120,41 @@ describe('UserServices', () => {
       expect(userRepository.updateName).not.toHaveBeenCalled();
     });
   });
+  describe('deleteUser', () => {
+    it('should delete a user', async () => {
+      const email = 'test@example.com';
+      const deletedUserRow = {
+        id: 1,
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'hashedPassword',
+        role: 'user'
+      };
+  
+      (userRepository.getUserByEmail as jest.Mock).mockResolvedValue(deletedUserRow);
+      (userRepository.deleteUser as jest.Mock).mockResolvedValue(deletedUserRow);
+  
+      const result = await userServices.deleteUser(email);
+      console.log('result: ', result);
+  
+      expect(result).toEqual(expect.objectContaining({
+        id: 1,
+        name: 'Test User',
+        email: 'test@example.com',
+        role: 'user'
+      }));
+    });
+  
+    it('should throw an error if the user does not exist', async () => {
+      const email = 'test@example.com';
+  
+      (userRepository.getUserByEmail as jest.Mock).mockResolvedValue(null);
+  
+      await expect(userServices.deleteUser(email)).rejects.toThrow('User not found');
+      expect(userRepository.deleteUser).not.toHaveBeenCalled();
+    });
+  });
 });
+
+
 
