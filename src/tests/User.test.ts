@@ -29,7 +29,6 @@ describe('UserServices', () => {
       (userRepository.createUser as jest.Mock).mockResolvedValue(user);
 
       const result = await userServices.create(user);
-      console.log('result: ',result)
 
       expect(result).toEqual(user);
     });
@@ -100,7 +99,6 @@ describe('UserServices', () => {
       (userRepository.updateName as jest.Mock).mockResolvedValue(user);
     
       const result = await userRepository.updateName(user.email, user.name);
-      console.log('result: ', result);
     
       expect(result).toEqual(user);
     });
@@ -135,7 +133,6 @@ describe('UserServices', () => {
       (userRepository.deleteUser as jest.Mock).mockResolvedValue(deletedUserRow);
   
       const result = await userServices.deleteUser(email);
-      console.log('result: ', result);
   
       expect(result).toEqual(expect.objectContaining({
         id: 1,

@@ -31,7 +31,6 @@ import UserRepository from "../repositories/userRepositories";
      try {
        const { email, password } = req.body;
        const token = await this.userServices.login(email, password);
-       // aq ele coloca como cookie
        res.cookie("jwt", token, {httpOnly: true});
        res.status(200).json({data: token});
      }catch (error: any) {
@@ -41,21 +40,18 @@ import UserRepository from "../repositories/userRepositories";
 
    loggedUser = async (req: Request, res: Response) => {
      try {
-       // pega o token dos cookies
-       const token = req.cookies.jwt;
-       console.log(token);
-       if (!token) {
-         throw new Error("Token not found");
+       const authHeader = req.headers['authorization'];
+       if (!authHeader || !authHeader.startsWith('Bearer ')) {
+         throw new Error("Bearer token not found");
        }
+       const token = authHeader.split(' ')[1];
        const decoded = await this.userServices.loggedUser(token);
-       res.status(200).json({data: decoded});
-
+       res.status(200).json({ data: decoded });
      } catch (error: any) {
-       console.log(error)
+       console.log(error);
        throw new Error("Invalid token");
      }
    }
-
     updatePassword = async (req: Request, res: Response) => {
       try {
         const { email, password } = req.body;
