@@ -122,7 +122,7 @@ describe('UserServices', () => {
     it('should delete a user', async () => {
       const email = 'test@example.com';
       const deletedUserRow = {
-        id: 1,
+        id: '1',
         name: 'Test User',
         email: 'test@example.com',
         password: 'hashedPassword',
@@ -135,7 +135,7 @@ describe('UserServices', () => {
       const result = await userServices.deleteUser(email);
   
       expect(result).toEqual(expect.objectContaining({
-        id: 1,
+        id: '1',
         name: 'Test User',
         email: 'test@example.com',
         role: 'user'
