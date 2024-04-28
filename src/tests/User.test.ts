@@ -12,6 +12,7 @@ describe('UserServices', () => {
     userRepository = new UserRepository();
     UserRepository.prototype.createUser = jest.fn();
     UserRepository.prototype.getUserByEmail = jest.fn();
+    UserRepository.prototype.updateName = jest.fn();
     userServices = new UserServices(userRepository);
   });
 
@@ -82,4 +83,41 @@ describe('UserServices', () => {
       expect(userRepository.createUser).not.toHaveBeenCalled();
     });
   });
+
+  describe('updateName', () => {
+    it('should update the name of an existing user', async () => {
+      const user = {
+        email: 'test@example.com',
+        password: 'newPassword12$',
+        name: 'Test User',
+        role: 'user'
+      };
+    
+      const existingUser = new UserModel('1', 'Test User', 'test@example.com', 'hashedPassword', 'user');
+    
+      (userRepository.getUserByEmail as jest.Mock).mockResolvedValue(existingUser);
+      (userRepository.updateName as jest.Mock).mockResolvedValue(user);
+    
+      const result = await userRepository.updateName(user.email, user.name);
+      console.log('result: ', result);
+    
+      expect(result).toEqual(user);
+    });
+    
+
+    it('should throw an error if the user does not exist', async () => {
+      const user = {
+        email: 'test@example.com',
+        password: 'password12$',
+        name: 'Test User',
+        role: 'user'
+      };
+
+      (userRepository.getUserByEmail as jest.Mock).mockResolvedValue(null);
+
+      await expect(userServices.updateName(user.email, user.name, user.password)).rejects.toThrow('User not found');
+      expect(userRepository.updateName).not.toHaveBeenCalled();
+    });
+  });
 });
+
