@@ -28,7 +28,6 @@ export default class UserServices {
       throw new Error("Invalid password");
     }
 
-    console.log(user)
     const userExists = await this.userRepository.getUserByEmail(user.email);
     if (userExists) {
       throw new Error("User already exists");
@@ -63,7 +62,6 @@ export default class UserServices {
     // esse jwt eh o json web token, basicamente um token que avisa se o user ta logado ou n,
     // ele expira em 1h (acho legal pq o admin n deveria ficar logado por muito tempo)
     // no controller ele vai setar esse token como um cookie
-    console.log(user)
     const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, 'secret', { expiresIn: '1h' });
     return token;
   }
@@ -72,7 +70,6 @@ export default class UserServices {
   loggedUser = async (token: string) => {
     try {
       const decoded = jwt.verify(token, 'secret');
-      console.log(decoded)
       return decoded;
     } catch (error) {
       console.log(error)
