@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import userRoutes from './routes/userRoutes';
+import tagRoutes from './routes/tagRoutes';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
@@ -14,6 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', userRoutes);
+app.use('/tag', tagRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
