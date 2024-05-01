@@ -1,5 +1,6 @@
 import pool from "../database";
 import UserModel from "../models/userModel";
+import TagRepository from "./tagRepositories";
 
 export default class UserRepository {
 
@@ -8,14 +9,18 @@ export default class UserRepository {
   }
   getUsers = async (): Promise<UserModel[]> => {
     const result = await pool.query('SELECT * FROM users');
+
     const users: UserModel[] = [];
     for (const row of result.rows) {
+      const tagRepository = new TagRepository();
+      const tags = await tagRepository.getTagByUserId(row.id);
       const user: UserModel = {
         id: row.id,
         name: row.name,
         email: row.email,
         password: row.password,
-        role: row.role
+        role: row.role,
+        tags: tags.map(tag => tag.name)
       };
       users.push(user);
     }
@@ -28,26 +33,37 @@ export default class UserRepository {
       return null;
     }
     const userRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(userRow.id);
     const user: UserModel = {
       id: userRow.id,
       name: userRow.name,
       email: userRow.email,
       password: userRow.password,
-      role: userRow.role
+      role: userRow.role,
+      tags: tags.map(tag => tag.name)
     };
     return user;
   }
 
   createUser = async (user: UserModel): Promise<UserModel> => {
     const result = await pool.query('INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *', [user.id, user.name, user.email, user.password, user.role]);
+    
+    const tagRepository = new TagRepository()
+    user.tags.forEach(async (tag) => {
+      const tagFound = await tagRepository.getTagByName(tag)   
+      const resultUsersTags = await pool.query('INSERT INTO users_tags (user_id, tag_id) VALUES ($1, $2) RETURNING *', [user.id, tagFound.id]);
+    })
     const createdUserRow = await result.rows[0];
     const createdUser: UserModel = {
       id: createdUserRow.id,
       name: createdUserRow.name,
       email: createdUserRow.email,
       password: createdUserRow.password,
-      role: createdUserRow.role
+      role: createdUserRow.role,
+      tags: user.tags
     };
+    console.log(createdUser)
     return createdUser;
   }
 
@@ -59,12 +75,15 @@ export default class UserRepository {
     }else if(updatedUserRow.deleted_at) {
       throw new Error("User not found");
     }
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(updatedUserRow.id);
     const updatedUser: UserModel = {
       id: updatedUserRow.id,
       name: updatedUserRow.name,
       email: updatedUserRow.email,
       password: updatedUserRow.password,
-      role: updatedUserRow.role
+      role: updatedUserRow.role,
+      tags: tags.map(tag => tag.name)
     };
     return updatedUser;
   }
@@ -75,12 +94,15 @@ export default class UserRepository {
     if(updatedUserRow.deleted_at) {
       throw new Error("User not found");
     }
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(updatedUserRow.id);
     const updatedUser: UserModel = {
       id: updatedUserRow.id,
       name: updatedUserRow.name,
       email: updatedUserRow.email,
       password: updatedUserRow.password,
-      role: updatedUserRow.role
+      role: updatedUserRow.role,
+      tags: tags.map(tag => tag.name)
     };
     return updatedUser;
   }
@@ -88,12 +110,15 @@ export default class UserRepository {
   deleteUser = async (email: string): Promise<UserModel> => {
     const result = await pool.query('UPDATE users set deleted_at = $1 WHERE email = $2 RETURNING *', [new Date(), email]);
     const deletedUserRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(deletedUserRow.id);
     const deletedUser: UserModel = {
       id: deletedUserRow.id,
       name: deletedUserRow.name,
       email: deletedUserRow.email,
       password: deletedUserRow.password,
-      role: deletedUserRow.role
+      role: deletedUserRow.role,
+      tags: tags.map(tag => tag.name)
     };
     return deletedUser;
   }

@@ -41,6 +41,20 @@ export default class TagRepository{
     return createdTag;
   }
 
+  getTagByUserId = async (userId: string): Promise<TagModel[]> => {
+    const result = await pool.query('SELECT tags.id, tags.name FROM tags INNER JOIN users_tags ON tags.id = users_tags.tag_id WHERE users_tags.user_id = $1', [userId]);
+    const tags: TagModel[] = [];
+    for (const row of result.rows) {
+      const tag: TagModel = {
+        id: row.id,
+        name: row.name
+      };
+      tags.push(tag);
+    }
+    console.log(tags);
+    return tags;
+  }
+
   updateName = async (name: string, newName: string): Promise<TagModel> => {
     const result = await pool.query('UPDATE tags SET name = $1 WHERE name = $2 RETURNING *', [newName, name]);
     const updatedTagRow = result.rows[0];

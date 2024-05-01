@@ -15,6 +15,7 @@ export default class TagController{
       res.status(500).json({error: error.message});
     }
   }
+  
   createTag = async (req: Request, res: Response) => {
     try {
       const tag = req.body;
