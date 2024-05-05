@@ -31,6 +31,19 @@ export default class TagRepository{
     return tag;
   }
 
+  getTagById = async (name: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM tags WHERE id = $1', [name]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    const tagRow = result.rows[0];
+    const tag: TagModel = {
+      id: tagRow.id,
+      name: tagRow.name
+    };
+    return tag;
+  }
+
   createTag = async (tag: TagModel): Promise<TagModel> => {
     const result = await pool.query('INSERT INTO tags (id, name) VALUES ($1, $2) RETURNING *', [tag.id, tag.name]);
     const createdTagRow = await result.rows[0];
@@ -68,8 +81,9 @@ export default class TagRepository{
     return updatedTag;
   }
 
-  deleteTag = async (name: string): Promise<TagModel> => {
-    const result = await pool.query('UPDATE tags set deleted_at = $1 WHERE name = $2 RETURNING *', [new Date(), name]);
+  deleteTag = async (id: string): Promise<TagModel> => {
+    console.log(id)
+    const result = await pool.query('UPDATE tags set deleted_at = $1 WHERE id = $2 RETURNING *', [new Date(), id]);
     const deletedTagRow = result.rows[0];
     if (result.rows.length === 0) {
       throw new Error("Tag not found");

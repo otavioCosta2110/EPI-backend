@@ -28,4 +28,13 @@ export default class TagServices{
     return createdTag;
   }
 
+  delete = async (tagId: string): Promise<TagModel> => {
+    const tag = await this.tagRepository.getTagById(tagId);
+    if (!tag) {
+      throw new Error("Tag not found");
+    }
+    const deletedTag = await this.tagRepository.deleteTag(tagId);
+    return deletedTag;
+  }
+
 }

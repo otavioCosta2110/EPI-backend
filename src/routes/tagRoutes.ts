@@ -6,5 +6,6 @@ const router = Router()
 const tagController = new TagController();
 router.get('/gettags', tagController.getTags);
 router.post('/create', tagController.createTag);
+router.post('/delete', tagController.deleteTag);
 
 export default router;
