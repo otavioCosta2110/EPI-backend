@@ -14,5 +14,6 @@ router.get('/loggeduser', userController.loggedUser);
 router.put('/updatepassword', userController.updatePassword);
 router.put('/updatename', userController.updateName);
 router.delete('/delete', userController.deleteUser);
+router.put('/removetag', userController.removeTag);
 
 export default router;

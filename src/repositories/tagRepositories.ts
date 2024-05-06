@@ -88,7 +88,6 @@ export default class TagRepository{
       };
       tags.push(tag);
     }
-    console.log(tags);
     return tags;
   }
 
@@ -106,7 +105,6 @@ export default class TagRepository{
   }
 
   deleteTag = async (id: string): Promise<TagModel> => {
-    console.log(id)
     const result = await pool.query('UPDATE tags set deleted_at = $1 WHERE id = $2 RETURNING *', [new Date(), id]);
     const deletedTagRow = result.rows[0];
     if (result.rows.length === 0) {

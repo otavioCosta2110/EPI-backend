@@ -48,7 +48,6 @@ import UserRepository from "../repositories/userRepositories";
        const decoded = await this.userServices.loggedUser(token);
        res.status(200).json({ data: decoded });
      } catch (error: any) {
-       console.log(error);
        throw new Error("Invalid token");
      }
    }
@@ -77,6 +76,16 @@ import UserRepository from "../repositories/userRepositories";
         const { email } = req.body;
         const deletedUser = await this.userServices.deleteUser(email);
         res.status(200).json({data: deletedUser});
+      }catch (error: any) {
+        res.status(500).json({error: error.message});
+      }
+    }
+
+    removeTag = async (req: Request, res: Response) => {
+      try {
+        const { email, tag } = req.body;
+        const removedTag = await this.userServices.removeTag(email, tag);
+        res.status(200).json({data: removedTag});
       }catch (error: any) {
         res.status(500).json({error: error.message});
       }

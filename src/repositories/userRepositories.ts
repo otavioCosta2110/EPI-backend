@@ -63,7 +63,6 @@ export default class UserRepository {
       role: createdUserRow.role,
       tags: user.tags
     };
-    console.log(createdUser)
     return createdUser;
   }
 
@@ -121,6 +120,30 @@ export default class UserRepository {
       tags: tags.map(tag => tag.name)
     };
     return deletedUser;
+  }
+
+  removeTag = async (email: string, tag: string): Promise<UserModel> => {
+    const resultUser = await pool.query('SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL', [email]);
+    if (resultUser.rows.length === 0) {
+      throw new Error("User not found");
+    }
+    const userRow = resultUser.rows[0];
+    const tagRepository = new TagRepository();
+    const tagFound = await tagRepository.getTagByName(tag);
+    const result = await pool.query('DELETE FROM users_tags WHERE user_id = $1 AND tag_id = $2 RETURNING *', [userRow.id, tagFound.id]);
+    if (result.rows.length === 0) {
+      throw new Error("Tag not found");
+    }
+    const tags = await tagRepository.getTagByUserId(userRow.id);
+    const user: UserModel = {
+      id: userRow.id,
+      name: userRow.name,
+      email: userRow.email,
+      password: userRow.password,
+      role: userRow.role,
+      tags: tags.map(tag => tag.name)
+    };
+    return user;
   }
 
 }

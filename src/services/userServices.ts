@@ -84,7 +84,6 @@ export default class UserServices {
       const decoded = jwt.verify(token, 'secret');
       return decoded;
     } catch (error) {
-      console.log(error)
       throw new Error("Invalid token");
     }
   }
@@ -137,6 +136,26 @@ export default class UserServices {
     }
     const deletedUser = await this.userRepository.deleteUser(email);
     return deletedUser;
+  }
+
+  removeTag = async (email: string, tag: string) =>{
+    if (!email || !tag) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(email) === false) {
+      throw new Error("Invalid email");
+    }
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const tagRepository = new TagRepository()
+    const tagExists = await tagRepository.getTagByName(tag)   
+    if (!tagExists) {
+      throw new Error("Tag not found");
+    }
+    const removedTag = await this.userRepository.removeTag(email, tag);
+    return removedTag;
   }
 
 }

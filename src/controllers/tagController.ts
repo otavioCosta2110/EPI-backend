@@ -29,7 +29,6 @@ export default class TagController{
   deleteTag = async (req: Request, res: Response) => {
     try {
       const tagId = req.body.id;
-      console.log(tagId)
       const deletedTag = await this.tagServices.delete(tagId);
       res.status(201).json({data: deletedTag});
     }catch (error: any) {
