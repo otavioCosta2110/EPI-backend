@@ -30,6 +30,10 @@ export default class TagServices{
 
   delete = async (tagId: string): Promise<TagModel> => {
     const tag = await this.tagRepository.getTagById(tagId);
+    const user = await this.tagRepository.getUserByTagId(tagId);
+    // if (user.isUserTag) {
+    //   throw new Error("This tag is in use");
+    // }
     if (!tag) {
       throw new Error("Tag not found");
     }

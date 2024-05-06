@@ -31,8 +31,32 @@ export default class TagRepository{
     return tag;
   }
 
-  getTagById = async (name: string): Promise<any> => {
-    const result = await pool.query('SELECT * FROM tags WHERE id = $1', [name]);
+  getTagById = async (id: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM tags WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    const tagRow = result.rows[0];
+    const tag: TagModel = {
+      id: tagRow.id,
+      name: tagRow.name
+    };
+    return tag;
+  }
+
+  getUserByTagId = async (id: string): Promise<any> => {
+    // sepa dps vai ter que fazer um for pra pegar users, videos e desafios.
+    // const tables = ['users_tags', 'videos_tags', 'challenges_tags'];
+    // for (const table of tables) {
+    //   const result = await pool.query(`SELECT * FROM ${table} WHERE tag_id = $1`, [id]);
+    //   if (result.rows.length !== 0) {
+    //     throw new Error("This tag is in use")
+    //   }
+
+    const result = await pool.query('SELECT * FROM users_tags WHERE tag_id = $1', [id]);
+    if (result.rows.length !== 0) {
+      throw new Error("This tag is in use")
+    }
     if (result.rows.length === 0) {
       return null;
     }
