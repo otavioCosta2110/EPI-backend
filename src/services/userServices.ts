@@ -18,6 +18,11 @@ export default class UserServices {
     return users;
   }
 
+  getUserByEmail = async (email: string) => {
+    const users = await this.userRepository.getUserByEmail(email);
+    return users;
+  }
+
   create = async (user: any) : Promise<UserModel> => {
     if (!user.email || !user.password || !user.name || !user.role) {
       throw new Error("Missing fields");
