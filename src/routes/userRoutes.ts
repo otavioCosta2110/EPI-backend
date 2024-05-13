@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/getusers', userController.getUsers);
-router.get('/getuserbyemail', userController.getUsers);
+router.get('/getuserbyemail', userController.getUserByEmail);
 router.post('/create', userController.createUser);
 router.post('/login', userController.login);
 router.get('/loggeduser', userController.loggedUser);
