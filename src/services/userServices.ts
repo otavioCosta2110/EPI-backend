@@ -3,6 +3,7 @@ import UserModel from "../models/userModel";
 import bcrypt from "bcrypt";
 import UserRepository from "../repositories/userRepositories";
 import { v4 as uuidv4 } from 'uuid';
+import TagRepository from '../repositories/tagRepositories';
 
 export default class UserServices {
 
@@ -28,13 +29,24 @@ export default class UserServices {
       throw new Error("Invalid password");
     }
 
+    const tags: string[] = user.tags;
+
+    const tagRepository = new TagRepository()
+    
+    for(let i = 0; i < tags.length; i++) {
+      const tagExists = await tagRepository.getTagByName(tags[i])   
+      if (!tagExists) {
+        throw new Error("Tag not found");
+      }
+    }
+
     const userExists = await this.userRepository.getUserByEmail(user.email);
     if (userExists) {
       throw new Error("User already exists");
     }
     const hashedPassword = await bcrypt.hash(user.password, 9);
     const userID = uuidv4();
-    const newUser = new UserModel(userID, user.name, user.email, hashedPassword, user.role);
+    const newUser = new UserModel(userID, user.name, user.email, hashedPassword, user.role, tags);
     const createdUser = await this.userRepository.createUser(newUser);
 
     return createdUser;
@@ -72,7 +84,6 @@ export default class UserServices {
       const decoded = jwt.verify(token, 'secret');
       return decoded;
     } catch (error) {
-      console.log(error)
       throw new Error("Invalid token");
     }
   }
@@ -125,6 +136,26 @@ export default class UserServices {
     }
     const deletedUser = await this.userRepository.deleteUser(email);
     return deletedUser;
+  }
+
+  removeTag = async (email: string, tag: string) =>{
+    if (!email || !tag) {
+      throw new Error("Missing fields");
+    }
+    if(isValidEmail(email) === false) {
+      throw new Error("Invalid email");
+    }
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const tagRepository = new TagRepository()
+    const tagExists = await tagRepository.getTagByName(tag)   
+    if (!tagExists) {
+      throw new Error("Tag not found");
+    }
+    const removedTag = await this.userRepository.removeTag(email, tag);
+    return removedTag;
   }
 
 }
