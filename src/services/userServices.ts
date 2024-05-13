@@ -19,8 +19,8 @@ export default class UserServices {
   }
 
   getUserByEmail = async (email: string) => {
-    const users = await this.userRepository.getUserByEmail(email);
-    return users;
+    const user = await this.userRepository.getUserByEmail(email);
+    return user;
   }
 
   create = async (user: any) : Promise<UserModel> => {
