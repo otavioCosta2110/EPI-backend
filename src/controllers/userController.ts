@@ -17,6 +17,15 @@ import UserRepository from "../repositories/userRepositories";
        res.status(500).json({error: error.message});
      }
    }
+   getUserByEmail = async (req: Request, res: Response) => {
+     try {
+       const email = req.params.email
+       const users = await this.userServices.getUserByEmail(email);
+       res.status(200).json({data: users});
+     }catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+   }
    createUser = async (req: Request, res: Response) => {
      try {
        const user = req.body;
