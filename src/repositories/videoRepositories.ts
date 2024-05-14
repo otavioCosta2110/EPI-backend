@@ -36,20 +36,22 @@ export default class TagRepository {
       const videoId = videoResult.rows[0].id;
 
       for (const tag of video.tags) {
-        // Generate UUID for the tag
-        const tagId = uuidv4();
-
-        // Insert the tag with the generated ID
-        await client.query("INSERT INTO tags (id, name) VALUES ($1, $2)", [
-          tagId,
-          tag,
-        ]);
-
-        // Link the video with the tag
-        await client.query(
-          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2)",
-          [videoId, tagId]
+        // Check if the tag exists
+        const tagResult = await client.query(
+          "SELECT id FROM tags WHERE name = $1",
+          [tag]
         );
+
+        if (tagResult.rows.length > 0) {
+          // If tag exists, link the video with the tag
+          await client.query(
+            "INSERT INTO video_tags (video_id, tag_id) SELECT $1, id FROM tags WHERE name = $2",
+            [videoId, tag]
+          );
+        } else {
+          // If tag does not exist, you might want to handle this case appropriately
+          throw new Error(`Tag '${tag}' does not exist.`);
+        }
       }
 
       await client.query("COMMIT");
