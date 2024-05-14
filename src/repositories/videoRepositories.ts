@@ -35,4 +35,8 @@ export default class TagRepository {
     };
     return createdVideo;
   };
+
+  deleteVideo = async (videoID: string) => {
+    await pool.query("DELETE FROM videos WHERE id = $1", [videoID]);
+  };
 }

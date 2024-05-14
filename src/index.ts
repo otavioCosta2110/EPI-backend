@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/videos", videoRoutes);
+app.use("/video", videoRoutes);
 app.use("/user", userRoutes);
 app.use("/tag", tagRoutes);
 

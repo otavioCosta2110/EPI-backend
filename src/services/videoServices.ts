@@ -13,7 +13,7 @@ export default class TagServices {
   };
 
   createVideo = async (video: any): Promise<VideoModel> => {
-    if (!video.title || !video.url || !video.description) {
+    if (!video.title || !video.url || !video.description || !video.tags) {
       throw new Error("Missing fields");
     }
     const videoID = uuidv4();
@@ -27,5 +27,9 @@ export default class TagServices {
     const createdVideo = await this.videoRepository.createVideo(newVideo);
 
     return createdVideo;
+  };
+
+  deleteVideo = async (videoID: string) => {
+    await this.videoRepository.deleteVideo(videoID);
   };
 }

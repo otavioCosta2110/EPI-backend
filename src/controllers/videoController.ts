@@ -25,4 +25,14 @@ export default class TagController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  deleteVideo = async (req: Request, res: Response) => {
+    try {
+      const videoID = req.body.id;
+      await this.videoServices.deleteVideo(videoID);
+      res.status(200).json({ message: "Video deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
