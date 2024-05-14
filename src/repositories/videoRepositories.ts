@@ -22,8 +22,8 @@ export default class TagRepository {
 
   createVideo = async (video: VideoModel): Promise<VideoModel> => {
     const result = await pool.query(
-      "INSERT INTO videos (id, title, url, description) VALUES ($1, $2, $3, $4) RETURNING *",
-      [video.id, video.title, video.url, video.description]
+      "INSERT INTO videos (id, title, url, description, tags) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [video.id, video.title, video.url, video.description, video.tags]
     );
     const createdVideoRow = result.rows[0];
     const createdVideo: VideoModel = {
