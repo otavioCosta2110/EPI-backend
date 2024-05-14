@@ -1,6 +1,5 @@
 import pool from "../database";
 import VideoModel from "../models/videoModel";
-import { v4 as uuidv4 } from "uuid";
 import TagRepository from "./tagRepositories";
 
 export default class VideoRepository {
