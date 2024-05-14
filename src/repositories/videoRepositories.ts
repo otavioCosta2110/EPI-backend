@@ -1,8 +1,9 @@
 import pool from "../database";
 import VideoModel from "../models/videoModel";
 import { v4 as uuidv4 } from "uuid";
+import TagRepository from "./tagRepositories";
 
-export default class TagRepository {
+export default class VideoRepository {
   constructor() {}
 
   getVideos = async (): Promise<VideoModel[]> => {
@@ -28,28 +29,20 @@ export default class TagRepository {
     try {
       await client.query("BEGIN");
 
-      // Insert the new video with the generated ID
       const videoResult = await client.query(
         "INSERT INTO videos (id, title, url, description) VALUES ($1, $2, $3, $4) RETURNING id",
         [video.id, video.title, video.url, video.description]
       );
       const videoId = videoResult.rows[0].id;
 
-      for (const tag of video.tags) {
-        const tagResult = await client.query(
-          "SELECT id FROM tags WHERE name = $1",
-          [tag]
+      const tagRepository = new TagRepository();
+      video.tags.forEach(async (tag) => {
+        const tagFound = await tagRepository.getTagByName(tag);
+        const resultVideosTags = await pool.query(
+          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2) RETURNING *",
+          [video.id, tagFound.id]
         );
-
-        if (tagResult.rows.length > 0) {
-          await client.query(
-            "INSERT INTO video_tags (video_id, tag_id) SELECT $1, id FROM tags WHERE name = $2",
-            [videoId, tag]
-          );
-        } else {
-          throw new Error(`Tag '${tag}' does not exist.`);
-        }
-      }
+      });
 
       await client.query("COMMIT");
 
