@@ -35,4 +35,15 @@ export default class TagController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  rateVideo = async (req: Request, res: Response) => {
+    try{
+      const {videoID, rating} = req.body;
+      await this.videoServices.rateVideo(videoID, rating)
+      res.status(200).json({message: "Video Rated!"})
+    } catch(error: any){
+      res.status(500).json({error: error.message})
+    }
+
+  }
 }

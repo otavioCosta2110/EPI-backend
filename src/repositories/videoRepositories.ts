@@ -19,6 +19,8 @@ export default class VideoRepository {
       url: row.url,
       description: row.description,
       tags: row.tags || [],
+      rating: row.rating,
+      timesRated: row.timesRated
     }));
     return videos;
   };
@@ -29,8 +31,8 @@ export default class VideoRepository {
       await client.query("BEGIN");
 
       const videoResult = await client.query(
-        "INSERT INTO videos (id, title, url, description) VALUES ($1, $2, $3, $4) RETURNING id",
-        [video.id, video.title, video.url, video.description]
+        "INSERT INTO videos (id, title, url, description, rating, timesRated) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+        [video.id, video.title, video.url, video.description, video.rating, video.timesRated]
       );
       const videoId = videoResult.rows[0].id;
 
@@ -51,6 +53,8 @@ export default class VideoRepository {
         url: video.url,
         description: video.description,
         tags: video.tags,
+        rating: video.rating,
+        timesRated: video.timesRated
       };
       return createdVideo;
     } catch (e) {
@@ -77,4 +81,45 @@ export default class VideoRepository {
       client.release();
     }
   };
+
+  rateVideo = async (videoID: string, newRating: number) => {
+    try {
+      const video = await this.findVideoByID(videoID)
+      if (video == null){
+        throw new Error("Video not found")
+      }
+      var average = newRating
+      console.log(video.timesrated)
+      if (video.timesrated > 0){
+        average = (video.rating + newRating)/video.timesrated
+      } 
+
+      const resultAverage = await pool.query('UPDATE videos SET rating = $1 WHERE id = $2', [average, videoID]);
+      const resultTimesRated = await pool.query('UPDATE videos SET timesrated = timesrated + 1 WHERE id = $1', [videoID]);
+    }catch(err){
+      return err
+    }
+  }
+
+  findVideoByID = async (id: string): Promise<VideoModel | any> => {
+    const result = await pool.query('SELECT * FROM videos WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const videoRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByVideoId(videoRow.id);
+    const video: VideoModel = {
+      id: videoRow.id,
+      title: videoRow.title,
+      url: videoRow.url,
+      rating: videoRow.rating,
+      description: videoRow.description,
+      tags: tags.map(tag => tag.name),
+      timesRated: videoRow.timesrated
+    };
+    return video;
+  }
 }
+
