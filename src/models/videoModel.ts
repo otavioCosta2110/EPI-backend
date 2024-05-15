@@ -4,6 +4,7 @@ export default class VideoModel {
     public title: string,
     public url: string,
     public description: string,
-    public tags: string[]
+    public tags: string[],
+    public user_id: string
   ) {}
 }
