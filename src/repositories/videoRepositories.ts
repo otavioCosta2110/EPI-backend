@@ -7,7 +7,7 @@ export default class VideoRepository {
 
   getVideos = async (): Promise<VideoModel[]> => {
     const result = await pool.query(`
-      SELECT v.id, v.title, v.url, v.description, array_agg(t.name) as tags
+      SELECT v.id, v.title, v.url, v.description, array_agg(t.name) as tags, v.user_id
       FROM videos v
       LEFT JOIN video_tags vt ON v.id = vt.video_id
       LEFT JOIN tags t ON vt.tag_id = t.id
@@ -19,6 +19,7 @@ export default class VideoRepository {
       url: row.url,
       description: row.description,
       tags: row.tags || [],
+      user_id: row.user_id,
     }));
     return videos;
   };
@@ -29,16 +30,16 @@ export default class VideoRepository {
       await client.query("BEGIN");
 
       const videoResult = await client.query(
-        "INSERT INTO videos (id, title, url, description) VALUES ($1, $2, $3, $4) RETURNING id",
-        [video.id, video.title, video.url, video.description]
+        "INSERT INTO videos (id, title, url, description, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+        [video.id, video.title, video.url, video.description, video.user_id]
       );
       const videoId = videoResult.rows[0].id;
 
       const tagRepository = new TagRepository();
       video.tags.forEach(async (tag) => {
         const tagFound = await tagRepository.getTagByName(tag);
-        const resultVideosTags = await pool.query(
-          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2) RETURNING *",
+        await client.query(
+          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2)",
           [video.id, tagFound.id]
         );
       });
@@ -51,6 +52,7 @@ export default class VideoRepository {
         url: video.url,
         description: video.description,
         tags: video.tags,
+        user_id: video.user_id,
       };
       return createdVideo;
     } catch (e) {

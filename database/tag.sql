@@ -14,16 +14,4 @@ CREATE TABLE users_tags (
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
 
-CREATE TABLE videos (
-  id VARCHAR PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  url TEXT NOT NULL,
-  description TEXT
-);
-
-CREATE TABLE video_tags (
-  video_id VARCHAR REFERENCES videos(id),
-  tag_id VARCHAR REFERENCES tags(id),
-  PRIMARY KEY (video_id, tag_id)
-);
 
