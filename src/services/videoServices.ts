@@ -3,7 +3,7 @@ import TagRepository from "../repositories/tagRepositories";
 import VideoRepository from "../repositories/videoRepositories";
 import { v4 as uuidv4 } from "uuid";
 
-export default class TagServices {
+export default class VideoServices {
   videoRepository = new VideoRepository();
 
   constructor() {}
@@ -14,7 +14,13 @@ export default class TagServices {
   };
 
   createVideo = async (video: any): Promise<VideoModel> => {
-    if (!video.title || !video.url || !video.description || !video.tags) {
+    if (
+      !video.title ||
+      !video.url ||
+      !video.description ||
+      !video.tags ||
+      !video.user_id
+    ) {
       throw new Error("Missing fields");
     }
     const videoID = uuidv4();
@@ -29,7 +35,8 @@ export default class TagServices {
       video.tags,
       videoRating,
       timesRated,
-      ratingTotal
+      ratingTotal,
+      video.user_id
     );
     const tagRepository = new TagRepository();
     for (let i = 0; i < video.tags.length; i++) {
@@ -39,7 +46,6 @@ export default class TagServices {
       }
     }
     const createdVideo = await this.videoRepository.createVideo(newVideo);
-
     return createdVideo;
   };
 

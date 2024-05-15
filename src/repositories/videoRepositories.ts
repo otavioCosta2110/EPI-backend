@@ -7,7 +7,7 @@ export default class VideoRepository {
 
   getVideos = async (): Promise<VideoModel[]> => {
     const result = await pool.query(`
-      SELECT v.id, v.title, v.url, v.description, array_agg(t.name) as tags
+      SELECT v.id, v.title, v.url, v.description, array_agg(t.name) as tags, v.user_id
       FROM videos v
       LEFT JOIN video_tags vt ON v.id = vt.video_id
       LEFT JOIN tags t ON vt.tag_id = t.id
@@ -21,7 +21,8 @@ export default class VideoRepository {
       tags: row.tags || [],
       rating: row.rating,
       timesRated: row.timesRated,
-      ratingTotal: row.ratingtotal
+      ratingTotal: row.ratingtotal,
+      user_id: row.user_id,
     }));
     return videos;
   };
@@ -31,17 +32,14 @@ export default class VideoRepository {
     try {
       await client.query("BEGIN");
 
-      const videoResult = await client.query(
-        "INSERT INTO videos (id, title, url, description, rating, timesRated, ratingtotal) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
-        [video.id, video.title, video.url, video.description, video.rating, video.timesRated, video.ratingTotal]
-      );
+      const videoResult = await client.query( "INSERT INTO videos (id, title, url, description, user_id, rating, timesRated, ratingtotal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id", [video.id, video.title, video.url, video.description, video.user_id, video.rating, video.timesRated, video.ratingTotal]);
       const videoId = videoResult.rows[0].id;
 
       const tagRepository = new TagRepository();
       video.tags.forEach(async (tag) => {
         const tagFound = await tagRepository.getTagByName(tag);
-        const resultVideosTags = await pool.query(
-          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2) RETURNING *",
+        await client.query(
+          "INSERT INTO video_tags (video_id, tag_id) VALUES ($1, $2)",
           [video.id, tagFound.id]
         );
       });
@@ -56,7 +54,8 @@ export default class VideoRepository {
         tags: video.tags,
         rating: video.rating,
         timesRated: video.timesRated,
-        ratingTotal: video.ratingTotal
+        ratingTotal: video.ratingTotal,
+        user_id: video.user_id,
       };
       return createdVideo;
     } catch (e) {
@@ -91,12 +90,12 @@ export default class VideoRepository {
         throw new Error("Video not found")
       }
       let average = newRating
-      console.log(newRating)
+      const ratingTotal = video.ratingTotal + newRating
+      console.log(video.timesRated)
       if (video.timesRated > 0){
-        average = (video.ratingTotal + newRating) / video.timesRated
-        console.log(average)
+        console.log(ratingTotal, newRating, video.timesRated)
+        average = ratingTotal / (video.timesRated + 1)
       } 
-      console.log(average)
 
       const resultAverage = await pool.query('UPDATE videos SET rating = $1 WHERE id = $2', [average, videoID]);
       const resultTimesRated = await pool.query('UPDATE videos SET timesrated = timesrated + 1 WHERE id = $1', [videoID]);
@@ -123,7 +122,8 @@ export default class VideoRepository {
       description: videoRow.description,
       tags: tags.map(tag => tag.name),
       timesRated: videoRow.timesrated,
-      ratingTotal: videoRow.ratingtotal
+      ratingTotal: videoRow.ratingtotal,
+      user_id: videoRow.user_id
     };
     return video;
   }

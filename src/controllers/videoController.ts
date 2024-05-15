@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import VideoRepository from "../repositories/videoRepositories";
 import VideoServices from "../services/videoServices";
 
-export default class TagController {
+export default class VideoController {
   videoRepository = new VideoRepository();
   videoServices = new VideoServices();
+
   constructor() {}
 
   getVideos = async (req: Request, res: Response) => {

@@ -8,5 +8,6 @@ export default class VideoModel {
     public rating: number,
     public timesRated: number,
     public ratingTotal: number,
+    public user_id: string
   ) {}
 }
