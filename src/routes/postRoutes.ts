@@ -4,8 +4,8 @@ import PostController from "../controllers/postController";
 const router = Router();
 
 const postController = new PostController();
-router.get("/posts/:threadID", postController.getPosts);
-router.post("/posts", postController.createPost);
-router.delete("/posts", postController.deletePost);
+router.get("/get/:threadID", postController.getPosts);
+router.post("/create", postController.createPost);
+router.delete("/delete", postController.deletePost);
 
 export default router;
