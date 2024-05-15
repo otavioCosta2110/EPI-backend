@@ -5,6 +5,7 @@ CREATE TABLE videos (
   description TEXT,
   rating FLOAT, 
   ratingTotal FLOAT, 
-  timesrated INT
+  timesrated INT,
+  user_id VARCHAR(255) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
