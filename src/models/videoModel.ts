@@ -6,6 +6,7 @@ export default class VideoModel {
     public description: string,
     public tags: string[],
     public rating: number,
-    public timesRated: number
+    public timesRated: number,
+    public ratingTotal: number,
   ) {}
 }

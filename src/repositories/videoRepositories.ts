@@ -20,7 +20,8 @@ export default class VideoRepository {
       description: row.description,
       tags: row.tags || [],
       rating: row.rating,
-      timesRated: row.timesRated
+      timesRated: row.timesRated,
+      ratingTotal: row.ratingtotal
     }));
     return videos;
   };
@@ -31,8 +32,8 @@ export default class VideoRepository {
       await client.query("BEGIN");
 
       const videoResult = await client.query(
-        "INSERT INTO videos (id, title, url, description, rating, timesRated) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-        [video.id, video.title, video.url, video.description, video.rating, video.timesRated]
+        "INSERT INTO videos (id, title, url, description, rating, timesRated, ratingtotal) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+        [video.id, video.title, video.url, video.description, video.rating, video.timesRated, video.ratingTotal]
       );
       const videoId = videoResult.rows[0].id;
 
@@ -54,7 +55,8 @@ export default class VideoRepository {
         description: video.description,
         tags: video.tags,
         rating: video.rating,
-        timesRated: video.timesRated
+        timesRated: video.timesRated,
+        ratingTotal: video.ratingTotal
       };
       return createdVideo;
     } catch (e) {
@@ -85,19 +87,22 @@ export default class VideoRepository {
   rateVideo = async (videoID: string, newRating: number) => {
     try {
       const video = await this.findVideoByID(videoID)
-      if (video == null){
+      if (!video){
         throw new Error("Video not found")
       }
-      var average = newRating
-      console.log(video.timesrated)
-      if (video.timesrated > 0){
-        average = (video.rating + newRating)/video.timesrated
+      let average = newRating
+      console.log(newRating)
+      if (video.timesRated > 0){
+        average = (video.ratingTotal + newRating) / video.timesRated
+        console.log(average)
       } 
+      console.log(average)
 
       const resultAverage = await pool.query('UPDATE videos SET rating = $1 WHERE id = $2', [average, videoID]);
       const resultTimesRated = await pool.query('UPDATE videos SET timesrated = timesrated + 1 WHERE id = $1', [videoID]);
+      const resultRatingTotal = await pool.query('UPDATE videos SET ratingtotal = ratingtotal + $1 WHERE id = $2', [newRating, videoID]);
     }catch(err){
-      return err
+      throw err
     }
   }
 
@@ -117,7 +122,8 @@ export default class VideoRepository {
       rating: videoRow.rating,
       description: videoRow.description,
       tags: tags.map(tag => tag.name),
-      timesRated: videoRow.timesrated
+      timesRated: videoRow.timesrated,
+      ratingTotal: videoRow.ratingtotal
     };
     return video;
   }

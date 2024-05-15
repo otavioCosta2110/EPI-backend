@@ -4,6 +4,7 @@ CREATE TABLE videos (
   url TEXT NOT NULL,
   description TEXT,
   rating FLOAT, 
+  ratingTotal FLOAT, 
   timesrated INT
 );
 

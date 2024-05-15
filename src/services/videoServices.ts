@@ -20,6 +20,7 @@ export default class TagServices {
     const videoID = uuidv4();
     const videoRating = 0
     const timesRated = 0
+    const ratingTotal = 0
     const newVideo = new VideoModel(
       videoID,
       video.title,
@@ -27,7 +28,8 @@ export default class TagServices {
       video.description,
       video.tags,
       videoRating,
-      timesRated
+      timesRated,
+      ratingTotal
     );
     const tagRepository = new TagRepository();
     for (let i = 0; i < video.tags.length; i++) {
@@ -46,13 +48,13 @@ export default class TagServices {
   };
 
   rateVideo = async (videoID: string, rating: number) => {
-    if (!videoID || !rating){
-      throw new Error("Missing fields");
-    }
     try{
+      if (!videoID || !rating){
+        throw new Error("Missing fields");
+      }
       await this.videoRepository.rateVideo(videoID, rating);
-    }catch(err){
-      throw new Error("Error Rating Video")
+    }catch(error: any){
+      throw new Error(error.message)
     }
   };
 }
