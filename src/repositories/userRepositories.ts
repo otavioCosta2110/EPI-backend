@@ -50,10 +50,12 @@ export default class UserRepository {
     const result = await pool.query('INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *', [user.id, user.name, user.email, user.password, user.role]);
     
     const tagRepository = new TagRepository()
-    user.tags.forEach(async (tag) => {
-      const tagFound = await tagRepository.getTagByName(tag)   
-      const resultUsersTags = await pool.query('INSERT INTO users_tags (user_id, tag_id) VALUES ($1, $2) RETURNING *', [user.id, tagFound.id]);
-    })
+    if(user.tags){
+      user.tags.forEach(async (tag) => {
+        const tagFound = await tagRepository.getTagByName(tag)   
+        const resultUsersTags = await pool.query('INSERT INTO users_tags (user_id, tag_id) VALUES ($1, $2) RETURNING *', [user.id, tagFound.id]);
+      })
+    }
     const createdUserRow = await result.rows[0];
     const createdUser: UserModel = {
       id: createdUserRow.id,

@@ -38,10 +38,13 @@ export default class UserServices {
 
     const tagRepository = new TagRepository()
     
-    for(let i = 0; i < tags.length; i++) {
-      const tagExists = await tagRepository.getTagByName(tags[i])   
-      if (!tagExists) {
-        throw new Error("Tag not found");
+    console.log(tags)
+    if(tags){
+      for(let i = 0; i < tags.length; i++) {
+        const tagExists = await tagRepository.getTagByName(tags[i])   
+        if (!tagExists) {
+          throw new Error("Tag not found");
+        }
       }
     }
 

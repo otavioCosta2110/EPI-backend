@@ -19,4 +19,3 @@ CREATE TABLE video_tags (
   tag_id VARCHAR REFERENCES tags(id),
   PRIMARY KEY (video_id, tag_id)
 );
-
