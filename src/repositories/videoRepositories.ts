@@ -19,6 +19,9 @@ export default class VideoRepository {
       url: row.url,
       description: row.description,
       tags: row.tags || [],
+      rating: row.rating,
+      timesRated: row.timesRated,
+      ratingTotal: row.ratingtotal,
       user_id: row.user_id,
     }));
     return videos;
@@ -29,10 +32,7 @@ export default class VideoRepository {
     try {
       await client.query("BEGIN");
 
-      const videoResult = await client.query(
-        "INSERT INTO videos (id, title, url, description, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-        [video.id, video.title, video.url, video.description, video.user_id]
-      );
+      const videoResult = await client.query( "INSERT INTO videos (id, title, url, description, user_id, rating, timesRated, ratingtotal) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id", [video.id, video.title, video.url, video.description, video.user_id, video.rating, video.timesRated, video.ratingTotal]);
       const videoId = videoResult.rows[0].id;
 
       const tagRepository = new TagRepository();
@@ -52,6 +52,9 @@ export default class VideoRepository {
         url: video.url,
         description: video.description,
         tags: video.tags,
+        rating: video.rating,
+        timesRated: video.timesRated,
+        ratingTotal: video.ratingTotal,
         user_id: video.user_id,
       };
       return createdVideo;
@@ -79,4 +82,50 @@ export default class VideoRepository {
       client.release();
     }
   };
+
+  rateVideo = async (videoID: string, newRating: number) => {
+    try {
+      const video = await this.findVideoByID(videoID)
+      if (!video){
+        throw new Error("Video not found")
+      }
+      let average = newRating
+      const ratingTotal = video.ratingTotal + newRating
+      console.log(video.timesRated)
+      if (video.timesRated > 0){
+        console.log(ratingTotal, newRating, video.timesRated)
+        average = ratingTotal / (video.timesRated + 1)
+      } 
+
+      const resultAverage = await pool.query('UPDATE videos SET rating = $1 WHERE id = $2', [average, videoID]);
+      const resultTimesRated = await pool.query('UPDATE videos SET timesrated = timesrated + 1 WHERE id = $1', [videoID]);
+      const resultRatingTotal = await pool.query('UPDATE videos SET ratingtotal = ratingtotal + $1 WHERE id = $2', [newRating, videoID]);
+    }catch(err){
+      throw err
+    }
+  }
+
+  findVideoByID = async (id: string): Promise<VideoModel | any> => {
+    const result = await pool.query('SELECT * FROM videos WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const videoRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByVideoId(videoRow.id);
+    const video: VideoModel = {
+      id: videoRow.id,
+      title: videoRow.title,
+      url: videoRow.url,
+      rating: videoRow.rating,
+      description: videoRow.description,
+      tags: tags.map(tag => tag.name),
+      timesRated: videoRow.timesrated,
+      ratingTotal: videoRow.ratingtotal,
+      user_id: videoRow.user_id
+    };
+    return video;
+  }
 }
+

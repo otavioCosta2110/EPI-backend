@@ -1,8 +1,11 @@
 CREATE TABLE videos (
-  id VARCHAR(255) PRIMARY KEY,
+  id VARCHAR PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   url TEXT NOT NULL,
   description TEXT,
+  rating FLOAT, 
+  ratingTotal FLOAT, 
+  timesrated INT,
   user_id VARCHAR(255) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -22,4 +25,3 @@ CREATE TABLE user_videos (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (video_id) REFERENCES videos(id)
 );
-
