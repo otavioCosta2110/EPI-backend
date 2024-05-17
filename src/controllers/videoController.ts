@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import VideoRepository from "../repositories/videoRepositories";
 import VideoServices from "../services/videoServices";
+import UserVideoServices from "../services/userVideoServices";
 
 export default class VideoController {
   videoRepository = new VideoRepository();
   videoServices = new VideoServices();
+  userVideoServices = new UserVideoServices();
 
   constructor() {}
 
@@ -32,6 +34,16 @@ export default class VideoController {
       const videoID = req.body.id;
       await this.videoServices.deleteVideo(videoID);
       res.status(200).json({ message: "Video deleted" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  playVideo = async (req: Request, res: Response) => {
+    try {
+      const { user_id, video_id } = req.body;
+      await this.userVideoServices.addUserVideoPlay(user_id, video_id);
+      res.status(200).json({ message: "Video played" });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
