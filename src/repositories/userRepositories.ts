@@ -45,6 +45,24 @@ export default class UserRepository {
     };
     return user;
   }
+  getUserById = async (id: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL', [id]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    const userRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(userRow.id);
+    const user: UserModel = {
+      id: userRow.id,
+      name: userRow.name,
+      email: userRow.email,
+      password: userRow.password,
+      role: userRow.role,
+      tags: tags.map(tag => tag.name)
+    };
+    return user;
+  }
 
   createUser = async (user: UserModel): Promise<UserModel> => {
     const result = await pool.query('INSERT INTO users (id, name, email, password, role) VALUES ($1, $2, $3, $4, $5) RETURNING *', [user.id, user.name, user.email, user.password, user.role]);

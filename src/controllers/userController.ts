@@ -26,6 +26,15 @@ import UserRepository from "../repositories/userRepositories";
        res.status(500).json({error: error.message});
      }
    }
+   getUserById = async (req: Request, res: Response) => {
+     try {
+       const id = req.query.id as string
+       const user = await this.userServices.getUserById(id);
+       res.status(200).json({data: user});
+     }catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+   }
    createUser = async (req: Request, res: Response) => {
      try {
        const user = req.body;
