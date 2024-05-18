@@ -1,5 +1,6 @@
 import pool from "../database";
 import ThreadModel from "../models/threadModel";
+import TagRepository from "./tagRepositories";
 
 export default class ThreadRepository {
   constructor() {}
@@ -28,11 +29,14 @@ export default class ThreadRepository {
       return null;
     }
     const threadRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByUserId(threadRow.id);
     const thread: ThreadModel = {
       id: threadRow.id,
       title: threadRow.title,
       description: threadRow.description,
       user_id: threadRow.user_id,
+      tags: tags.map(tag => tag.name)
     };
     return thread;
   }
@@ -42,6 +46,13 @@ export default class ThreadRepository {
       "INSERT INTO threads (id, title, description, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [thread.id, thread.title, thread.description, thread.user_id]
     );
+    const tagRepository = new TagRepository()
+    if(thread.tags){
+      thread.tags.forEach(async (tag: string) => {
+        const tagFound = await tagRepository.getTagByName(tag)   
+        const resultUsersTags = await pool.query('INSERT INTO threads_tags (thread_id, tag_id) VALUES ($1, $2) RETURNING *', [thread.id, tagFound.id]);
+      })
+    }
     return new ThreadModel(
       result.rows[0].id,
       result.rows[0].title,

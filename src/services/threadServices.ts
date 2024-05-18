@@ -21,7 +21,8 @@ export default class ThreadServices {
       threadID,
       threadData.title,
       threadData.description,
-      threadData.user_id
+      threadData.user_id,
+      threadData.tags
     );
     return await this.threadRepository.createThread(newThread);
   };

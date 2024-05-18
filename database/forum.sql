@@ -9,6 +9,14 @@ CREATE TABLE threads (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE threads_tags (
+    thread_id VARCHAR(255) NOT NULL,
+    tag_id VARCHAR(255) NOT NULL,
+    PRIMARY KEY (thread_id, tag_id),
+    FOREIGN KEY (thread_id) REFERENCES threads(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
 CREATE TABLE posts (
     id VARCHAR(255) PRIMARY KEY,
     content TEXT NOT NULL,
@@ -19,4 +27,12 @@ CREATE TABLE posts (
     deleted_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (thread_id) REFERENCES threads(id)
+);
+
+CREATE TABLE posts_tags (
+    thread_id VARCHAR(255) NOT NULL,
+    tag_id VARCHAR(255) NOT NULL,
+    PRIMARY KEY (thread_id, tag_id),
+    FOREIGN KEY (thread_id) REFERENCES threads(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
