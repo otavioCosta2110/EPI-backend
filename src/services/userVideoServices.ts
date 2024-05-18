@@ -10,4 +10,8 @@ export default class UserVideoServices {
     const userVideo = new UserVideoModel(user_id, video_id);
     await this.userVideoRepository.addUserVideoPlay(userVideo);
   };
+
+  getWatchedVideos = async (user_id: string) => {
+    return await this.userVideoRepository.getWatchedVideos(user_id);
+  };
 }

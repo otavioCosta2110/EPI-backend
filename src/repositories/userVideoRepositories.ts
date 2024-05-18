@@ -30,4 +30,20 @@ export default class UserVideoRepository {
       client.release();
     }
   };
+
+  getWatchedVideos = async (user_id: string): Promise<UserVideoModel[]> => {
+    const result = await pool.query(
+      "SELECT * FROM user_videos WHERE user_id = $1",
+      [user_id]
+    );
+    const userVideos: UserVideoModel[] = result.rows.map((row) => {
+      return new UserVideoModel(
+        row.user_id,
+        row.video_id,
+        row.play_count,
+        row.last_played
+      );
+    });
+    return userVideos;
+  }
 }

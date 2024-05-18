@@ -69,4 +69,14 @@ export default class VideoController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  watchedVideos = async (req: Request, res: Response) => {
+    try {
+       const user_id = req.query.id as string
+      const videos = await this.userVideoServices.getWatchedVideos(user_id);
+      res.status(200).json({ data: videos });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
