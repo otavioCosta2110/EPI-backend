@@ -19,6 +19,8 @@ CREATE TABLE video_tags (
 CREATE TABLE user_videos (
     user_id VARCHAR(255) NOT NULL,
     video_id VARCHAR(255) NOT NULL,
+    rating FLOAT DEFAULT NULL,
+    watched BOOLEAN DEFAULT FALSE,
     play_count INT DEFAULT 1,
     last_played TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, video_id),

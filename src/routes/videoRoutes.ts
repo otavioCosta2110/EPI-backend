@@ -10,5 +10,6 @@ router.post("/create", videoController.createVideo);
 router.post("/delete", videoController.deleteVideo);
 router.put("/rate", videoController.rateVideo);
 router.post("/play", videoController.playVideo);
+router.get("/watchedvideos", videoController.watchedVideos);
 
 export default router;

@@ -107,7 +107,7 @@ export default class VideoRepository {
     }
   };
 
-  rateVideo = async (videoID: string, newRating: number) => {
+  rateVideo = async (userID: string, videoID: string, newRating: number) => {
     try {
       const video = await this.findVideoByID(videoID)
       if (!video){
@@ -124,9 +124,19 @@ export default class VideoRepository {
       const resultAverage = await pool.query('UPDATE videos SET rating = $1 WHERE id = $2', [average, videoID]);
       const resultTimesRated = await pool.query('UPDATE videos SET timesrated = timesrated + 1 WHERE id = $1', [videoID]);
       const resultRatingTotal = await pool.query('UPDATE videos SET ratingtotal = ratingtotal + $1 WHERE id = $2', [newRating, videoID]);
+      const resultRatingUserVideos = await pool.query('UPDATE user_videos SET rating = $1 WHERE user_id = $2 AND video_id = $3', [newRating, userID, videoID]);
     }catch(err){
       throw err
     }
+  }
+
+  isVideoRatedByUser = async (userID: string, videoID: string): Promise<boolean> => {
+    const result = await pool.query('SELECT * FROM user_videos WHERE user_id = $1 AND video_id = $2 AND rating IS NOT NULL', [userID, videoID]);
+    console.log(result)
+    if (result.rows.length === 0) {
+      return false;
+    }
+    return true;
   }
 
   findVideoByID = async (id: string): Promise<VideoModel | any> => {

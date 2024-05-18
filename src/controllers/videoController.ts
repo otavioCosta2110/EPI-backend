@@ -51,8 +51,8 @@ export default class VideoController {
 
   rateVideo = async (req: Request, res: Response) => {
     try{
-      const {videoID, rating} = req.body;
-      await this.videoServices.rateVideo(videoID, rating)
+      const {userID, videoID, rating} = req.body;
+      await this.videoServices.rateVideo(userID, videoID, rating)
       res.status(200).json({message: "Video Rated!"})
     } catch(error: any){
       res.status(500).json({error: error.message})
@@ -65,6 +65,16 @@ export default class VideoController {
       const { user_id, video_id } = req.body;
       await this.userVideoServices.addUserVideoPlay(user_id, video_id);
       res.status(200).json({ message: "Video played" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  watchedVideos = async (req: Request, res: Response) => {
+    try {
+       const user_id = req.query.id as string
+      const videos = await this.userVideoServices.getWatchedVideos(user_id);
+      res.status(200).json({ data: videos });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
