@@ -19,6 +19,16 @@ export default class VideoController {
     }
   };
 
+  getVideoById = async (req: Request, res: Response) => {
+     try {
+       const id = req.query.id as string
+       const video = await this.videoServices.getVideoById(id);
+       res.status(200).json({data: video});
+     }catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+   }
+
   createVideo = async (req: Request, res: Response) => {
     try {
       const video = req.body;

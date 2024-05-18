@@ -27,6 +27,30 @@ export default class VideoRepository {
     return videos;
   };
 
+  getVideoById = async (id: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM videos WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+    console.log("deu merffa")
+      return null;
+    }
+    const videoRow = result.rows[0];
+    const tagRepository = new TagRepository();
+    const tags = await tagRepository.getTagByVideoId(videoRow.id);
+    const video: VideoModel = {
+      id: videoRow.id,
+      title: videoRow.title,
+      url: videoRow.url,
+      description: videoRow.description,
+      rating: videoRow.rating,
+      timesRated: videoRow.timesRated,
+      ratingTotal: videoRow.ratingtotal,
+      user_id: videoRow.user_id,
+      tags: tags.map(tag => tag.name)
+    };
+    console.log(video)
+    return video;
+  }
+
   createVideo = async (video: VideoModel): Promise<VideoModel> => {
     const client = await pool.connect();
     try {
