@@ -51,8 +51,8 @@ export default class VideoController {
 
   rateVideo = async (req: Request, res: Response) => {
     try{
-      const {videoID, rating} = req.body;
-      await this.videoServices.rateVideo(videoID, rating)
+      const {userID, videoID, rating} = req.body;
+      await this.videoServices.rateVideo(userID, videoID, rating)
       res.status(200).json({message: "Video Rated!"})
     } catch(error: any){
       res.status(500).json({error: error.message})

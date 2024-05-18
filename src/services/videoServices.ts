@@ -58,12 +58,18 @@ export default class VideoServices {
     await this.videoRepository.deleteVideo(videoID);
   };
 
-  rateVideo = async (videoID: string, rating: number) => {
+  rateVideo = async (userID: string, videoID: string, rating: number) => {
     try{
       if (!videoID || !rating){
         throw new Error("Missing fields");
       }
-      await this.videoRepository.rateVideo(videoID, rating);
+      const isVideoRated = await this.videoRepository.isVideoRatedByUser(userID, videoID)
+      console.log(isVideoRated)
+      if(isVideoRated){
+        throw new Error("Video Already Rated by User")
+
+      }
+      await this.videoRepository.rateVideo(userID, videoID, rating);
     }catch(error: any){
       throw new Error(error.message)
     }
