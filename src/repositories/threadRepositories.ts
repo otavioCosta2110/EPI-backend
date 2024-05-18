@@ -22,6 +22,21 @@ export default class ThreadRepository {
     );
   };
 
+  getThreadById = async (id: string): Promise<any> => {
+    const result = await pool.query('SELECT * FROM threads WHERE id = $1 AND deleted_at IS NULL', [id]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    const threadRow = result.rows[0];
+    const thread: ThreadModel = {
+      id: threadRow.id,
+      title: threadRow.title,
+      description: threadRow.description,
+      user_id: threadRow.user_id,
+    };
+    return thread;
+  }
+
   createThread = async (thread: ThreadModel): Promise<ThreadModel> => {
     const result = await pool.query(
       "INSERT INTO threads (id, title, description, user_id) VALUES ($1, $2, $3, $4) RETURNING *",

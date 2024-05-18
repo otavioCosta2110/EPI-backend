@@ -15,6 +15,16 @@ export default class ThreadController {
     }
   };
 
+   getThreadById = async (req: Request, res: Response) => {
+     try {
+       const id = req.query.id as string
+       const thread = await this.threadServices.getThreadById(id);
+       res.status(200).json({data: thread});
+     }catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+   }
+
   createThread = async (req: Request, res: Response) => {
     try {
       const threadData = req.body;
