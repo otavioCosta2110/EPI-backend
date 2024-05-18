@@ -13,6 +13,11 @@ export default class VideoServices {
     return videos;
   };
 
+  getVideoById = async (id: string) => {
+    const video = await this.videoRepository.getVideoById(id);
+    return video;
+  }
+
   createVideo = async (video: any): Promise<VideoModel> => {
     if (
       !video.title ||
