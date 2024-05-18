@@ -9,18 +9,20 @@ export default class ThreadRepository {
     const result = await pool.query(
       "SELECT * FROM threads WHERE deleted_at IS NULL"
     );
-    return result.rows.map(
-      (row) =>
-        new ThreadModel(
-          row.id,
-          row.title,
-          row.description,
-          row.user_id,
-          row.created_at,
-          row.updated_at,
-          row.deleted_at
-        )
-    );
+    const threads: ThreadModel[] = [] 
+    for (const row of result.rows) {
+      const tagRepository = new TagRepository();
+      const tags = await tagRepository.getTagByThreadId(row.id);
+      const thread: ThreadModel = {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        user_id: row.user_id,
+        tags: tags.map(tag => tag.name)
+      };
+      threads.push(thread);
+    }
+    return threads
   };
 
   getThreadById = async (id: string): Promise<any> => {
@@ -30,7 +32,7 @@ export default class ThreadRepository {
     }
     const threadRow = result.rows[0];
     const tagRepository = new TagRepository();
-    const tags = await tagRepository.getTagByUserId(threadRow.id);
+    const tags = await tagRepository.getTagByThreadId(threadRow.id);
     const thread: ThreadModel = {
       id: threadRow.id,
       title: threadRow.title,
