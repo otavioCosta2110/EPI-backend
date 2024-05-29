@@ -27,11 +27,10 @@ export default class VideoRepository {
     return videos;
   };
 
-  getVideoById = async (id: string): Promise<any> => {
+  getVideoById = async (id: string): Promise<VideoModel> => {
     const result = await pool.query('SELECT * FROM videos WHERE id = $1', [id]);
     if (result.rows.length === 0) {
-    console.log("deu merffa")
-      return null;
+      throw new Error("Video not found");
     }
     const videoRow = result.rows[0];
     const tagRepository = new TagRepository();

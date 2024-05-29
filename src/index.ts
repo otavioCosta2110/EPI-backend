@@ -1,5 +1,11 @@
 import express from "express";
 import bodyParser from "body-parser";
+import userRoutes from "./routes/userRoutes";
+import tagRoutes from "./routes/tagRoutes";
+import videoRoutes from "./routes/videoRoutes";
+import threadRoutes from "./routes/threadRoutes";
+import postRoutes from "./routes/postRoutes";
+import questionFormRoutes from "./routes/questionFormRoutes";
 import userRoutes from "./routes/user.routes";
 import tagRoutes from "./routes/tag.routes";
 import videoRoutes from "./routes/video.routes";
@@ -23,6 +29,7 @@ app.use("/post", postRoutes);
 app.use("/video", videoRoutes);
 app.use("/user", userRoutes);
 app.use("/tag", tagRoutes);
+app.use("/mail", questionFormRoutes);
 app.use("/material", materialRoutes);
 
 app.listen(3000, () => {
