@@ -30,7 +30,6 @@ export default class VideoRepository {
   getVideoById = async (id: string): Promise<any> => {
     const result = await pool.query('SELECT * FROM videos WHERE id = $1', [id]);
     if (result.rows.length === 0) {
-    console.log("deu merffa")
       return null;
     }
     const videoRow = result.rows[0];
