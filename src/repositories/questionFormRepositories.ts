@@ -2,6 +2,7 @@ const { google } = require('googleapis');
 import nodemailer from 'nodemailer';
 import QuestionFormModel from "../models/questionFormModel";
 import VideoRepository from './videoRepositories';
+import UserRepository from './userRepositories';
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -21,10 +22,15 @@ oauth2Client.setCredentials({
 
 export default class QuestionFormRepository {
   constructor() {}
-  videoRepository = new VideoRepository();
 
   sendMail = async (questionForm: QuestionFormModel): Promise<string> => {
     const accessToken = await oauth2Client.getAccessToken();
+
+    const videoRepository = new VideoRepository();
+    const foundVideo = await videoRepository.getVideoById(questionForm.videoid);
+
+    const userRepository = new UserRepository()
+    const foundUser = await userRepository.getUserById(questionForm.userid);
 
     let transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -41,9 +47,9 @@ export default class QuestionFormRepository {
     });
 
     let mailOptions = {
-      from: questionForm.useremail,
+      from: foundUser.email,
       to: 'otaviocosta23212@gmail.com',
-      subject: `Necessito de suporte no vídeo ${this.videoRepository.getVideoById(questionForm.videoid).title}`,
+      subject: `Necessito de suporte no vídeo ${foundVideo.title}`,
       text: questionForm.message,
     };
 

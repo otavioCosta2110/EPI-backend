@@ -10,7 +10,7 @@ export default class QuestionFormServices {
   }
 
   sendMail = async (questionForm: QuestionFormModel): Promise<string> => {
-    if (!questionForm.useremail || !questionForm.message || !questionForm.videoid) {
+    if (!questionForm.userid || !questionForm.message || !questionForm.videoid) {
       throw new Error("Missing fields");
     }
     const response = await this.questionFormRepository.sendMail(questionForm);
