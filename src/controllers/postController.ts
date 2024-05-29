@@ -26,6 +26,16 @@ export default class PostController {
     }
   };
 
+  editPost = async (req: Request, res: Response) => {
+    try {
+      const body = req.body;
+      const editedPost = await this.postServices.editPost(body);
+      res.status(201).json({ data: editedPost });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   deletePost = async (req: Request, res: Response) => {
     try {
       const postID = req.body.id;

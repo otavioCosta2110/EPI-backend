@@ -39,6 +39,23 @@ export default class PostRepository {
     );
   };
 
+  editPost = async (post: any): Promise<PostModel> => {
+    const result = await pool.query(
+      "UPDATE posts SET content = $1 WHERE id = $2 RETURNING *",
+      [post.content, post.postID]
+    );
+    console.log(post)
+    return new PostModel(
+      result.rows[0].id,
+      result.rows[0].content,
+      result.rows[0].user_id,
+      result.rows[0].thread_id,
+      result.rows[0].created_at,
+      result.rows[0].updated_at,
+      result.rows[0].deleted_at
+    );
+  };
+
   deletePost = async (postID: string) => {
     await pool.query(
       "UPDATE posts SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1",

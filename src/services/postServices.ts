@@ -22,6 +22,13 @@ export default class PostServices {
     return await this.postRepository.createPost(newPost);
   };
 
+  editPost = async (postData: any): Promise<PostModel> => {
+    if (!postData.postID || !postData.content) {
+      throw new Error("Missing fields");
+    }
+    return await this.postRepository.editPost(postData);
+  };
+
   deletePost = async (postID: string) => {
     await this.postRepository.deletePost(postID);
   };
