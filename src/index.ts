@@ -6,6 +6,12 @@ import videoRoutes from "./routes/videoRoutes";
 import threadRoutes from "./routes/threadRoutes";
 import postRoutes from "./routes/postRoutes";
 import questionFormRoutes from "./routes/questionFormRoutes";
+import userRoutes from "./routes/user.routes";
+import tagRoutes from "./routes/tag.routes";
+import videoRoutes from "./routes/video.routes";
+import threadRoutes from "./routes/thread.routes";
+import postRoutes from "./routes/post.routes";
+import materialRoutes from "./routes/material.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -24,6 +30,7 @@ app.use("/video", videoRoutes);
 app.use("/user", userRoutes);
 app.use("/tag", tagRoutes);
 app.use("/mail", questionFormRoutes);
+app.use("/material", materialRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
