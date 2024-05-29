@@ -12,12 +12,16 @@ export default class PostServices {
   };
 
   createPost = async (postData: any): Promise<PostModel> => {
+    if (!postData.content || !postData.user_id || !postData.thread_id) {
+      throw new Error("Missing fields");
+    }
     const postID = uuidv4();
     const newPost = new PostModel(
       postID,
       postData.content,
       postData.user_id,
-      postData.thread_id
+      postData.thread_id,
+      postData.post_id
     );
     return await this.postRepository.createPost(newPost);
   };

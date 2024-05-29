@@ -16,6 +16,7 @@ export default class PostRepository {
           row.content,
           row.user_id,
           row.thread_id,
+          row.post_id,
           row.created_at,
           row.updated_at,
           row.deleted_at
@@ -24,15 +25,17 @@ export default class PostRepository {
   };
 
   createPost = async (post: PostModel): Promise<PostModel> => {
+    console.log(post)
     const result = await pool.query(
-      "INSERT INTO posts (id, content, user_id, thread_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [post.id, post.content, post.user_id, post.thread_id]
+      "INSERT INTO posts (id, content, user_id, thread_id, post_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [post.id, post.content, post.user_id, post.thread_id, post.post_id]
     );
     return new PostModel(
       result.rows[0].id,
       result.rows[0].content,
       result.rows[0].user_id,
       result.rows[0].thread_id,
+      result.rows[0].post_id,
       result.rows[0].created_at,
       result.rows[0].updated_at,
       result.rows[0].deleted_at
@@ -50,6 +53,7 @@ export default class PostRepository {
       result.rows[0].content,
       result.rows[0].user_id,
       result.rows[0].thread_id,
+      result.rows[0].post_id,
       result.rows[0].created_at,
       result.rows[0].updated_at,
       result.rows[0].deleted_at

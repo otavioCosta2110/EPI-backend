@@ -22,6 +22,7 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     thread_id VARCHAR(255) NOT NULL,
+    post_id VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,
