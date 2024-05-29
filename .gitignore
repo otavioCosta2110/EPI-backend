@@ -1,7 +1,5 @@
 node_modules
 .env
 data
-<<<<<<< HEAD
 test.sql
-=======
->>>>>>> main
+uploads/*
