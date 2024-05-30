@@ -1,7 +1,7 @@
 CREATE TABLE materials (
     id VARCHAR(255) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    type VARCHAR(50) NOT NULL,
+    type VARCHAR(50),
     description TEXT,
     file_url VARCHAR(255),
     video_id VARCHAR(255) NOT NULL,
