@@ -5,11 +5,11 @@ export default class MaterialRepository {
   constructor() {}
 
   async createMaterial(material: MaterialModel): Promise<MaterialModel> {
-    const { id, title, type, description, file_url } = material;
+    const { id, title, type, description, file_url, video_id } = material;
 
     const result = await pool.query(
-      "INSERT INTO materials (id, title, type, description, file_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [id, title, type, description, file_url]
+      "INSERT INTO materials (id, title, type, description, video_id, file_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [id, title, type, description, video_id, file_url]
     );
 
     const createdMaterialRow = result.rows[0];
@@ -18,6 +18,7 @@ export default class MaterialRepository {
       title: createdMaterialRow.title,
       type: createdMaterialRow.type,
       description: createdMaterialRow.description,
+      video_id: createdMaterialRow.video_id,
       file_url: createdMaterialRow.file_url,
     };
 
@@ -66,6 +67,25 @@ export default class MaterialRepository {
     };
     return updatedMaterial;
   }
+
+  getMaterialByVideoId = async (videoID: string): Promise<MaterialModel[]> => {
+    console.log("videoID:", videoID);
+    const result = await pool.query(
+      "SELECT * FROM materials WHERE video_id = $1",
+      [videoID]
+    );
+    return result.rows.map(
+      (row) =>
+        new MaterialModel(
+          row.id,
+          row.title,
+          row.type,
+          row.description,
+          videoID,
+          row.file_url,
+        )
+    );
+  };
 
   async deleteMaterial(id: string): Promise<void> {
     await pool.query("DELETE FROM materials WHERE id = $1", [id]);

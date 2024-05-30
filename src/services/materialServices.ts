@@ -8,7 +8,7 @@ export default class MaterialServices {
   constructor() {}
 
   async createMaterial(materialData: any): Promise<MaterialModel> {
-    const { title, type, description, fileUrl } = materialData;
+    const { title, type, description, fileUrl, videoID } = materialData;
     if (!title || !type) {
       throw new Error("Missing fields");
     }
@@ -18,6 +18,7 @@ export default class MaterialServices {
       title,
       type,
       description,
+      videoID,
       fileUrl
     );
     const createdMaterial = await this.materialRepository.createMaterial(
@@ -33,6 +34,11 @@ export default class MaterialServices {
     }
     return material;
   }
+
+  getMaterialByVideoId = async (videoID: string): Promise<MaterialModel[]> => {
+    return await this.materialRepository.getMaterialByVideoId(videoID);
+  };
+
   async updateMaterial(id: string, materialData: any): Promise<MaterialModel> {
     const existingMaterial = await this.materialRepository.getMaterialById(id);
     if (!existingMaterial) {
