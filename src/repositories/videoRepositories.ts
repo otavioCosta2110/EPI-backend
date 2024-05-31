@@ -46,7 +46,6 @@ export default class VideoRepository {
       user_id: videoRow.user_id,
       tags: tags.map(tag => tag.name)
     };
-    console.log(video)
     return video;
   }
 
