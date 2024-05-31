@@ -14,7 +14,6 @@ export default class QuestionFormServices {
       throw new Error("Missing fields");
     }
     const response = await this.questionFormRepository.sendMail(questionForm);
-    console.log('response: ', response)
     return response;
   }
 }

@@ -31,6 +31,7 @@ export default class QuestionFormRepository {
 
     const userRepository = new UserRepository()
     const foundUser = await userRepository.getUserById(questionForm.userid);
+    const foundTeacher = await userRepository.getUserById(foundVideo.user_id);
 
     let transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -46,9 +47,10 @@ export default class QuestionFormRepository {
       }
     });
 
+    console.log(foundUser)
     let mailOptions = {
       from: foundUser.email,
-      to: 'otaviocosta23212@gmail.com',
+      to: foundTeacher.email,
       subject: `Necessito de suporte no vídeo ${foundVideo.title}`,
       text: questionForm.message,
     };
