@@ -50,6 +50,27 @@ export default class MaterialRepository {
     }
   }
 
+  async getMaterials(): Promise<MaterialModel[] | null> {
+    try {
+      const result = await pool.query("SELECT * FROM materials WHERE deleted_at IS NULL");
+      const materials: MaterialModel[] = [];
+      for (const row of result.rows) {
+        const material: MaterialModel= {
+          id: row.id,
+          title: row.title,
+          type: row.type,
+          description: row.description,
+          file_url: row.file_url,
+        };
+        materials.push(material);
+      }
+      return materials;
+    } catch (error) {
+      console.error("Error fetching material:", error);
+      return null;
+    }
+  }
+
   async updateMaterial(material: MaterialModel): Promise<MaterialModel> {
     const result = await pool.query(
       "UPDATE materials SET title = $1, type = $2, file_url = $3, description = $4 WHERE id = $5 RETURNING *",
