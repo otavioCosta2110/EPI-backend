@@ -35,6 +35,11 @@ export default class MaterialServices {
     return material;
   }
 
+  async getMaterials(): Promise<MaterialModel[] | null> {
+    const materials = await this.materialRepository.getMaterials();
+    return materials;
+  }
+
   getMaterialByVideoId = async (videoID: string): Promise<MaterialModel[]> => {
     return await this.materialRepository.getMaterialByVideoId(videoID);
   };

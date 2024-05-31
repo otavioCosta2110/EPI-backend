@@ -26,6 +26,7 @@ router.post(
   materialController.createMaterial
 );
 router.get("/getmaterial/:id", materialController.getMaterialById);
+router.get("/getmaterials", materialController.getMaterials);
 router.get("/getmaterialbyvideo/:videoID", materialController.getMaterialByVideoId);
 router.put("/updatematerial/:id", materialController.updateMaterial);
 router.delete("/deletematerial/:id", materialController.deleteMaterial);

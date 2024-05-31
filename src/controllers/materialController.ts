@@ -36,6 +36,17 @@ export default class MaterialController {
     }
   };
 
+  getMaterials = async (req: Request, res: Response) => {
+    try {
+      const materials = await this.materialServices.getMaterials();
+      const responseData: any = { data: materials };
+      res.status(200).json(responseData);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+
   getMaterialByVideoId = async (req: Request, res: Response) => {
     try {
       const { videoID } = req.params;
