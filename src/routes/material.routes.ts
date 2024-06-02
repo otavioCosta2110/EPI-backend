@@ -3,6 +3,7 @@ import multer from "multer";
 import MaterialController from "../controllers/materialController";
 import path from "path";
 import express from "express";
+
 const router = Router();
 const materialController = new MaterialController();
 
@@ -28,9 +29,10 @@ router.post(
 router.get("/getmaterial/:id", materialController.getMaterialById);
 router.put("/updatematerial/:id", materialController.updateMaterial);
 router.delete("/deletematerial/:id", materialController.deleteMaterial);
+
 router.get("/download/:filename", (req, res) => {
   const filename = req.params.filename;
-  const filePath = path.join(__dirname, "../uploads", filename);
+  const filePath = path.resolve(__dirname, "../../uploads", filename);
 
   res.download(filePath, (err) => {
     if (err) {
@@ -42,6 +44,9 @@ router.get("/download/:filename", (req, res) => {
   });
 });
 
-router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+router.use(
+  "/uploads",
+  express.static(path.resolve(__dirname, "../../uploads"))
+);
 
 export default router;
