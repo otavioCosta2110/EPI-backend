@@ -27,10 +27,27 @@ router.post(
 );
 router.get("/getmaterial/:id", materialController.getMaterialById);
 router.get("/getmaterials", materialController.getMaterials);
-router.get("/getmaterialbyvideo/:videoID", materialController.getMaterialByVideoId);
+router.get(
+  "/getmaterialbyvideo/:videoID",
+  materialController.getMaterialByVideoId
+);
 router.put("/updatematerial/:id", materialController.updateMaterial);
 router.delete("/deletematerial/:id", materialController.deleteMaterial);
 
-router.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+router.get("/download/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.resolve(__dirname, "../../uploads", filename);
+
+  res.download(filePath, (err) => {
+    if (err) {
+      res.status(404).send({
+        message: "File not found.",
+        error: err.message,
+      });
+    }
+  });
+});
+
+router.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 
 export default router;
