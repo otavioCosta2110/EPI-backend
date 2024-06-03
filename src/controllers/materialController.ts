@@ -8,7 +8,7 @@ export default class MaterialController {
   createMaterial = async (req: Request, res: Response) => {
     try {
       const { title, type, description, videoID } = req.body;
-      const fileUrl = req.file ? req.file.filename : undefined;
+      const fileUrl = req.file ? req.file.filename : req.body.file_url;
       const materialData = { title, type, description, fileUrl, videoID };
       const createdMaterial = await this.materialServices.createMaterial(
         materialData
@@ -46,12 +46,13 @@ export default class MaterialController {
     }
   };
 
-
   getMaterialByVideoId = async (req: Request, res: Response) => {
     try {
       const { videoID } = req.params;
-      console.log("vsdasdasideoID:", videoID)
-      const materials = await this.materialServices.getMaterialByVideoId(videoID);
+      console.log("vsdasdasideoID:", videoID);
+      const materials = await this.materialServices.getMaterialByVideoId(
+        videoID
+      );
       res.status(200).json({ data: materials });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
