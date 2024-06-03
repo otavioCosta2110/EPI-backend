@@ -6,7 +6,7 @@ export default class PostRepository {
 
   getPosts = async (threadID: string): Promise<PostModel[]> => {
     const result = await pool.query(
-      "SELECT * FROM posts WHERE thread_id = $1 AND deleted_at IS NULL",
+      "SELECT * FROM posts WHERE thread_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC",
       [threadID]
     );
     return result.rows.map(
@@ -25,7 +25,7 @@ export default class PostRepository {
   };
 
   createPost = async (post: PostModel): Promise<PostModel> => {
-    console.log(post)
+    console.log(post);
     const result = await pool.query(
       "INSERT INTO posts (id, content, user_id, thread_id, post_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [post.id, post.content, post.user_id, post.thread_id, post.post_id]
@@ -47,7 +47,7 @@ export default class PostRepository {
       "UPDATE posts SET content = $1 WHERE id = $2 RETURNING *",
       [post.content, post.postID]
     );
-    console.log(post)
+    console.log(post);
     return new PostModel(
       result.rows[0].id,
       result.rows[0].content,
