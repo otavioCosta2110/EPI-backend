@@ -7,6 +7,7 @@ import threadRoutes from "./routes/thread.routes";
 import postRoutes from "./routes/post.routes";
 import questionFormRoutes from "./routes/questionForm.routes";
 import materialRoutes from "./routes/material.routes";
+import challengeRoutes from "./routes/challenge.routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -26,6 +27,7 @@ app.use("/user", userRoutes);
 app.use("/tag", tagRoutes);
 app.use("/mail", questionFormRoutes);
 app.use("/material", materialRoutes);
+app.use("/challenge", challengeRoutes);
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
