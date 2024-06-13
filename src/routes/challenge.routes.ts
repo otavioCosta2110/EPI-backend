@@ -1,10 +1,11 @@
 import { Router } from "express";
 import multer from "multer";
-import MaterialController from "../controllers/materialController";
+import ChallengeController from "../controllers/challengeController";
 import path from "path";
 import express from "express";
+
 const router = Router();
-const materialController = new MaterialController();
+const challengeController = new ChallengeController();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -23,19 +24,19 @@ const upload = multer({ storage: storage });
 router.post(
   "/create",
   upload.single("file_url"),
-  materialController.createMaterial
+  challengeController.createChallenge
 );
-router.get("/getmaterial/:id", materialController.getMaterialById);
+router.get("/getchallenge/:id", challengeController.getChallengeById);
 
-router.get("/getmaterials", materialController.getMaterials);
+router.get("/getchallenges", challengeController.getChallenges);
 router.get(
-  "/getmaterialbyvideo/:videoID",
-  materialController.getMaterialByVideoId
+  "/getchallengebyvideo/:videoID",
+  challengeController.getChallengeByVideoId
 );
 
-router.put("/updatematerial/:id", materialController.updateMaterial);
+router.put("/updatechallenge/:id", challengeController.updateChallenge);
 
-router.delete("/deletematerial/:id", materialController.deleteMaterial);
+router.delete("/deletechallenge/:id", challengeController.deleteChallenge);
 
 router.get("/download/:filename", (req, res) => {
   const filename = req.params.filename;
@@ -52,5 +53,5 @@ router.get("/download/:filename", (req, res) => {
 });
 
 router.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
-//a
+
 export default router;
