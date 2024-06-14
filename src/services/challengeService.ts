@@ -10,7 +10,7 @@ export default class ChallengeServices {
   async createChallenge(challengeData: any): Promise<ChallengeModel> {
     const { title, type, description, startDate, endDate, fileUrl, videoID } =
       challengeData;
-    if (!title || !type || !startDate || !endDate) {
+    if (!title || !type) {
       throw new Error("Missing fields");
     }
     const challengeID = uuidv4();
