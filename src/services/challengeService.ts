@@ -19,8 +19,8 @@ export default class ChallengeServices {
       title,
       type,
       description,
-      new Date(startDate),
-      new Date(endDate),
+      startDate ? new Date(startDate) : null,
+      endDate ? new Date(endDate) : null,
       videoID,
       fileUrl
     );
@@ -60,6 +60,10 @@ export default class ChallengeServices {
       throw new Error("Challenge not found");
     }
     const updatedChallenge = { ...existingChallenge, ...challengeData };
+    if (challengeData.startDate)
+      updatedChallenge.startDate = new Date(challengeData.startDate);
+    if (challengeData.endDate)
+      updatedChallenge.endDate = new Date(challengeData.endDate);
     const result = await this.challengeRepository.updateChallenge(
       updatedChallenge
     );
