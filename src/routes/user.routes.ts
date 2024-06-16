@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
 router.get('/getusers', userController.getUsers);
 router.get('/getuserbyemail', userController.getUserByEmail);
 router.get('/getuserbyid', userController.getUserById);
+router.get('/getlastlogin', userController.getLastLogin);
 router.post('/create', userController.createUser);
 router.post('/login', userController.login);
 router.get('/loggeduser', userController.loggedUser);

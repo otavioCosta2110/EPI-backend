@@ -35,6 +35,18 @@ import UserRepository from "../repositories/userRepositories";
        res.status(500).json({error: error.message});
      }
    }
+
+   getLastLogin = async (req: Request, res: Response) => {
+     try{
+       const id = req.query.id as string
+       const lastLogin = await this.userServices.getLastLogin(id);
+       res.status(200).json({data: lastLogin});
+     } catch (error: any) {
+       res.status(500).json({error: error.message});
+     }
+
+   }
+
    createUser = async (req: Request, res: Response) => {
      try {
        const user = req.body;
