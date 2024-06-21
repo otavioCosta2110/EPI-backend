@@ -23,6 +23,7 @@ CREATE TABLE posts (
     user_id VARCHAR(255) NOT NULL,
     thread_id VARCHAR(255) NOT NULL,
     post_id VARCHAR(255) DEFAULT NULL,
+    votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,
