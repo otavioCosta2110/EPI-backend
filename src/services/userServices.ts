@@ -27,6 +27,11 @@ export default class UserServices {
     return user;
   };
 
+  getLastLogin = async (id: string): Promise<Date> => {
+    const lastLogin = await this.userRepository.getLastLogin(id);
+    return lastLogin;
+  };
+
   create = async (user: any): Promise<UserModel> => {
     if (!user.email || !user.password || !user.name || !user.role) {
       throw new Error('Missing fields');
@@ -94,11 +99,8 @@ export default class UserServices {
     // esse jwt eh o json web token, basicamente um token que avisa se o user ta logado ou n,
     // ele expira em 1h (acho legal pq o admin n deveria ficar logado por muito tempo)
     // no controller ele vai setar esse token como um cookie
-    const token = jwt.sign(
-      { id: user.id, email: user.email, name: user.name },
-      'secret',
-      { expiresIn: '1h' }
-    );
+    // const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, 'secret', { expiresIn: '1h' });
+    const token = this.userRepository.login(user.id, user.email, user.name);
     return token;
   };
 

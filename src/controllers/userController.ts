@@ -37,6 +37,16 @@ export default class UserController {
     }
   };
 
+  getLastLogin = async (req: Request, res: Response) => {
+    try {
+      const id = req.query.id as string;
+      const lastLogin = await this.userServices.getLastLogin(id);
+      res.status(200).json({ data: lastLogin });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   createUser = async (req: Request, res: Response) => {
     try {
       const user = req.body;
@@ -69,7 +79,7 @@ export default class UserController {
       const decoded = await this.userServices.loggedUser(token);
       res.status(200).json({ data: decoded });
     } catch (error: any) {
-      throw new Error('Invalid token');
+      res.status(500).json({ error: error.message });
     }
   };
 

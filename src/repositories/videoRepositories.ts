@@ -49,6 +49,16 @@ export default class VideoRepository {
     return video;
   }
 
+  search = async (name: string): Promise<VideoModel[]> => {
+    const result = await pool.query(`
+      SELECT id FROM videos WHERE title ILIKE $1;
+    `, [`%${name}%`]);
+    const videos = await Promise.all(result.rows.map(async (row) => {
+      return await this.getVideoById(row.id);
+    }));
+    return videos;
+  }
+
   createVideo = async (video: VideoModel): Promise<VideoModel> => {
     const client = await pool.connect();
     try {

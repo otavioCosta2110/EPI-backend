@@ -1,4 +1,5 @@
 import pool from '../database';
+import jwt from 'jsonwebtoken';
 import UserModel from '../models/userModel';
 import TagRepository from './tagRepositories';
 
@@ -70,6 +71,15 @@ export default class UserRepository {
     return user;
   };
 
+  getLastLogin = async (id: string): Promise<Date> => {
+    const result = await pool.query(
+      'SELECT last_login FROM users WHERE id = $1',
+      [id]
+    );
+    const lastLogin = result.rows[0].last_login;
+    return lastLogin;
+  };
+
   createUser = async (user: UserModel): Promise<UserModel> => {
     const result = await pool.query(
       'INSERT INTO users (id, name, email, password, role, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
@@ -97,6 +107,17 @@ export default class UserRepository {
       image_url: createdUserRow.image_url,
     };
     return createdUser;
+  };
+
+  login = async (id: string, email: string, name: string): Promise<string> => {
+    const token = jwt.sign({ id: id, email: email, name: name }, 'secret', {
+      expiresIn: '1h',
+    });
+    const result = await pool.query(
+      'UPDATE users SET last_login = $1 WHERE id = $2',
+      [new Date(), id]
+    );
+    return token;
   };
 
   updatePassword = async (

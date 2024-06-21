@@ -29,6 +29,17 @@ export default class VideoController {
      }
    }
 
+   search = async (req: Request, res: Response) => {
+    try {
+      const name = req.params.name;
+      console.log(name)
+      const videos = await this.videoServices.search(name);
+      res.status(200).json({ data: videos });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+   }
+
   createVideo = async (req: Request, res: Response) => {
     try {
       const video = req.body;

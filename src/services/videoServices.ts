@@ -18,6 +18,11 @@ export default class VideoServices {
     return video;
   }
 
+  search = async (name: string) => {
+    const videos = await this.videoRepository.search(name);
+    return videos;
+  }
+
   createVideo = async (video: any): Promise<VideoModel> => {
     if (
       !video.title ||
