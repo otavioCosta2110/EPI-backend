@@ -39,3 +39,4 @@ CREATE TABLE user_post_votes (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );
+ALTER TABLE POSTS ADD votes int DEFAULT 0;
