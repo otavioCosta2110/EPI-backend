@@ -29,3 +29,12 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (thread_id) REFERENCES threads(id)
 );
+
+CREATE TABLE user_post_votes (
+    user_id VARCHAR(255) NOT NULL,
+    post_id VARCHAR(255) NOT NULL,
+    voted BOOLEAN,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);

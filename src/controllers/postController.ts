@@ -45,4 +45,25 @@ export default class PostController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  vote = async (req: Request, res: Response) => {
+    try {
+      const { userID, postID, vote } = req.body;
+      console.log(req.body)
+      await this.postServices.vote(userID, postID, vote);
+      res.status(200).json({ message: "Vote registered" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  removeVote = async (req: Request, res: Response) => {
+    try {
+      const { userID, postID } = req.body;
+      await this.postServices.removeVote(userID, postID);
+      res.status(200).json({ message: "Vote removed" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
