@@ -66,4 +66,47 @@ export default class PostRepository {
       [postID]
     );
   };
+
+  vote = async (userID: string, postID: string, vote: number) => {
+    const voteBool = vote == 1;
+    const voteValue = voteBool ? 1: -1;
+    const checkVote = await pool.query(
+      "SELECT voted FROM user_post_votes WHERE user_id = $1 AND post_id = $2",
+        [userID, postID]
+    );
+
+    if (checkVote.rows.length === 0 || checkVote.rows[0].voted === null || checkVote.rows[0].voted !== voteBool) {
+      const resultUserPost = await pool.query(
+        "INSERT INTO user_post_votes (user_id, post_id, voted) VALUES ($1, $2, $3) ON CONFLICT (user_id, post_id) DO UPDATE SET voted = EXCLUDED.voted",
+          [userID, postID, voteBool]
+      );
+
+      const resultVotes = await pool.query(
+        "UPDATE posts SET votes = votes + $1 WHERE id = $2",
+          [voteValue, postID]
+      );
+    }
+  };
+
+  removeVote = async (userID: string, postID: string) => {
+    const checkVote = await pool.query(
+      "SELECT voted FROM user_post_votes WHERE user_id = $1 AND post_id = $2",
+        [userID, postID]
+    );
+    const votedValue = checkVote.rows[0].voted ? -1 : 1;
+    console.log(votedValue)
+
+    if (checkVote.rows.length !== 0) {
+      const resultUserPost = await pool.query(
+        "DELETE FROM user_post_votes WHERE user_id = $1 AND post_id = $2",
+          [userID, postID]
+      );
+
+
+      const resultVotes = await pool.query(
+        "UPDATE posts SET votes = votes + $1 WHERE id = $2",
+          [votedValue, postID]
+      );
+    }
+  }
 }

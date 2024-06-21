@@ -23,9 +23,20 @@ CREATE TABLE posts (
     user_id VARCHAR(255) NOT NULL,
     thread_id VARCHAR(255) NOT NULL,
     post_id VARCHAR(255) DEFAULT NULL,
+    votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (thread_id) REFERENCES threads(id)
 );
+
+CREATE TABLE user_post_votes (
+    user_id VARCHAR(255) NOT NULL,
+    post_id VARCHAR(255) NOT NULL,
+    voted BOOLEAN,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
+ALTER TABLE POSTS ADD votes int DEFAULT 0;

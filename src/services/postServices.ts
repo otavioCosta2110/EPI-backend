@@ -36,4 +36,12 @@ export default class PostServices {
   deletePost = async (postID: string) => {
     await this.postRepository.deletePost(postID);
   };
+
+  vote = async (userID: string, postID: string, vote: number) => {
+    await this.postRepository.vote(userID, postID, vote);
+  };
+
+  removeVote = async (userID: string, postID: string) => {
+    await this.postRepository.removeVote(userID, postID);
+  }
 }

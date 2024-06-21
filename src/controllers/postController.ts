@@ -45,4 +45,30 @@ export default class PostController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  vote = async (req: Request, res: Response) => {
+    try {
+      const { userID, postID, vote } = req.body;
+      if (!userID || !postID || !vote) {
+        throw new Error("Missing fields");
+      }
+      await this.postServices.vote(userID, postID, vote);
+      res.status(200).json({ message: "Vote registered" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  removeVote = async (req: Request, res: Response) => {
+    try {
+      const { userID, postID } = req.body;
+      if (!userID || !postID) {
+        throw new Error("Missing fields");
+      }
+      await this.postServices.removeVote(userID, postID);
+      res.status(200).json({ message: "Vote removed" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
