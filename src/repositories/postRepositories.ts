@@ -17,6 +17,29 @@ export default class PostRepository {
           row.user_id,
           row.thread_id,
           row.post_id,
+          row.video_id,
+          row.votes,
+          row.created_at,
+          row.updated_at,
+          row.deleted_at
+        )
+    );
+  };
+
+  getPostsByVideoID = async (videoID: string): Promise<PostModel[]> => {
+    const result = await pool.query(
+      "SELECT * FROM posts WHERE video_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC",
+      [videoID]
+    );
+    return result.rows.map(
+      (row) =>
+        new PostModel(
+          row.id,
+          row.content,
+          row.user_id,
+          row.thread_id,
+          row.post_id,
+          row.video_id,
           row.votes,
           row.created_at,
           row.updated_at,
@@ -28,8 +51,8 @@ export default class PostRepository {
   createPost = async (post: PostModel): Promise<PostModel> => {
     console.log(post);
     const result = await pool.query(
-      "INSERT INTO posts (id, content, user_id, thread_id, post_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [post.id, post.content, post.user_id, post.thread_id, post.post_id]
+      "INSERT INTO posts (id, content, user_id, thread_id, post_id, video_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [post.id, post.content, post.user_id, post.thread_id, post.post_id, post.video_id]
     );
     return new PostModel(
       result.rows[0].id,
@@ -37,6 +60,7 @@ export default class PostRepository {
       result.rows[0].user_id,
       result.rows[0].thread_id,
       result.rows[0].post_id,
+      result.rows[0].video_id,
       result.rows[0].votes,
       result.rows[0].created_at,
       result.rows[0].updated_at,

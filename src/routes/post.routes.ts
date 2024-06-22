@@ -5,6 +5,7 @@ const router = Router();
 
 const postController = new PostController();
 router.get("/get/:threadID", postController.getPosts);
+router.get("/getbyvideo/:videoID", postController.getPostsByVideoID);
 router.post("/create", postController.createPost);
 router.put("/edit", postController.editPost);
 router.delete("/delete", postController.deletePost);
