@@ -79,10 +79,12 @@ export default class PostRepository {
 
     const previousVote = checkVote.rows[0] ? checkVote.rows[0].voted : null;
     var voteValue = voteBool ? 1: - 1;
-    if (previousVote && !voteBool) {
-      voteValue = -2
-    } else if (!previousVote && voteBool) {
-      voteValue = 2
+    if (previousVote != null){
+      if (previousVote && !voteBool) {
+        voteValue = -2
+      } else if (!previousVote && voteBool) {
+        voteValue = 2
+      }
     }
 
     if (checkVote.rows.length === 0 || checkVote.rows[0].voted === null || checkVote.rows[0].voted !== voteBool) {
