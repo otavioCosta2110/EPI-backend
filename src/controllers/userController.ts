@@ -47,6 +47,22 @@ export default class UserController {
     }
   };
 
+  getUserImage = async (req: Request, res: Response) => {
+    try {
+      const email = req.query.email as string;
+      if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+      const user = await this.userServices.getUserByEmail(email);
+      if (!user || !user.image_url) {
+        return res.status(404).json({ error: 'User or image not found' });
+      }
+      res.status(200).json({ data: user.image_url });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   createUser = async (req: Request, res: Response) => {
     try {
       const user = req.body;
