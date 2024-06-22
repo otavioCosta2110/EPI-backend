@@ -71,4 +71,17 @@ export default class PostController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  isVoted = async (req: Request, res: Response) => {
+    try {
+      const { userID, postID } = req.body;
+      if (!userID || !postID) {
+        throw new Error("Missing fields");
+      }
+      const isVoted = await this.postServices.isVoted(userID, postID);
+      res.status(200).json({ data: isVoted });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

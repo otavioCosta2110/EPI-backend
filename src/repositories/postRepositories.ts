@@ -112,4 +112,15 @@ export default class PostRepository {
       );
     }
   }
+
+  isVoted = async (userID: string, postID: string) => {
+    const result = await pool.query(
+      "SELECT voted FROM user_post_votes WHERE user_id = $1 AND post_id = $2",
+        [userID, postID]
+    );
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0].voted;
+  }
 }
