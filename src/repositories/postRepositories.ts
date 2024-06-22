@@ -72,11 +72,18 @@ export default class PostRepository {
 
   vote = async (userID: string, postID: string, vote: number) => {
     const voteBool = vote == 1;
-    const voteValue = voteBool ? 1: -1;
     const checkVote = await pool.query(
       "SELECT voted FROM user_post_votes WHERE user_id = $1 AND post_id = $2",
         [userID, postID]
     );
+
+    const previousVote = checkVote.rows[0] ? checkVote.rows[0].voted : null;
+    var voteValue = voteBool ? 1: - 1;
+    if (previousVote && !voteBool) {
+      voteValue = -2
+    } else if (!previousVote && voteBool) {
+      voteValue = 2
+    }
 
     if (checkVote.rows.length === 0 || checkVote.rows[0].voted === null || checkVote.rows[0].voted !== voteBool) {
       const resultUserPost = await pool.query(
