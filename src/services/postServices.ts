@@ -46,4 +46,8 @@ export default class PostServices {
   removeVote = async (userID: string, postID: string) => {
     await this.postRepository.removeVote(userID, postID);
   }
+
+  isVoted = async (userID: string, postID: string) => {
+    return await this.postRepository.isVoted(userID, postID);
+  }
 }
