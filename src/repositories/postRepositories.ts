@@ -17,6 +17,7 @@ export default class PostRepository {
           row.user_id,
           row.thread_id,
           row.post_id,
+          row.votes,
           row.created_at,
           row.updated_at,
           row.deleted_at
@@ -36,6 +37,7 @@ export default class PostRepository {
       result.rows[0].user_id,
       result.rows[0].thread_id,
       result.rows[0].post_id,
+      result.rows[0].votes,
       result.rows[0].created_at,
       result.rows[0].updated_at,
       result.rows[0].deleted_at
@@ -54,6 +56,7 @@ export default class PostRepository {
       result.rows[0].user_id,
       result.rows[0].thread_id,
       result.rows[0].post_id,
+      result.rows[0].votes,
       result.rows[0].created_at,
       result.rows[0].updated_at,
       result.rows[0].deleted_at

@@ -16,12 +16,14 @@ export default class PostServices {
       throw new Error("Missing fields");
     }
     const postID = uuidv4();
+    const postVotes = 0;
     const newPost = new PostModel(
       postID,
       postData.content,
       postData.user_id,
       postData.thread_id,
-      postData.post_id
+      postData.post_id, 
+      postVotes
     );
     return await this.postRepository.createPost(newPost);
   };
