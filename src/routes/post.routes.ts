@@ -10,6 +10,6 @@ router.put("/edit", postController.editPost);
 router.delete("/delete", postController.deletePost);
 router.put("/vote", postController.vote);
 router.put("/removeVote", postController.removeVote);
-router.get("/isvoted", postController.isVoted);
+router.get("/isvoted/:userID/:postID", postController.isVoted);
 
 export default router;

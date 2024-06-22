@@ -74,7 +74,8 @@ export default class PostController {
 
   isVoted = async (req: Request, res: Response) => {
     try {
-      const { userID, postID } = req.body;
+      const userID = req.params.userID;
+      const postID = req.params.postID;
       if (!userID || !postID) {
         throw new Error("Missing fields");
       }
