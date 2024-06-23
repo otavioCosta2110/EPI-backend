@@ -156,4 +156,34 @@ export default class UserController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  updateUserImage = async (req: Request, res: Response) => {
+    try {
+      const authHeader = req.headers['authorization'];
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new Error('Bearer token not found');
+      }
+      const token = authHeader.split(' ')[1];
+      const decoded = await this.userServices.loggedUser(token);
+
+      if (!decoded.email) {
+        throw new Error('Email not found in token');
+      }
+
+      const email = decoded.email;
+      const imageUrl = req.file ? req.file.path : null;
+
+      if (!imageUrl) {
+        throw new Error('Image file not found');
+      }
+
+      const updatedUser = await this.userServices.updateUserImage(
+        email,
+        imageUrl
+      );
+      res.status(200).json({ data: updatedUser });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }

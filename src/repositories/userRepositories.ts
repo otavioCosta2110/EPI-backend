@@ -113,6 +113,7 @@ export default class UserRepository {
     const token = jwt.sign({ id: id, email: email, name: name }, 'secret', {
       expiresIn: '1h',
     });
+    console.log(token);
     const result = await pool.query(
       'UPDATE users SET last_login = $1 WHERE id = $2',
       [new Date(), id]
@@ -219,7 +220,10 @@ export default class UserRepository {
     return user;
   };
 
-  updateImage = async (email: string, imageUrl: string): Promise<UserModel> => {
+  updateUserImage = async (
+    email: string,
+    imageUrl: string
+  ): Promise<UserModel> => {
     const result = await pool.query(
       'UPDATE users SET image_url = $1, updated_at = $2 WHERE email = $3 RETURNING *',
       [imageUrl, new Date(), email]
@@ -238,8 +242,8 @@ export default class UserRepository {
       email: updatedUserRow.email,
       password: updatedUserRow.password,
       role: updatedUserRow.role,
-      image_url: updatedUserRow.image_url,
       tags: tags.map((tag) => tag.name),
+      image_url: updatedUserRow.image_url,
     };
     return updatedUser;
   };
