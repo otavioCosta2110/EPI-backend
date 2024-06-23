@@ -11,8 +11,12 @@ export default class PostServices {
     return await this.postRepository.getPosts(threadID);
   };
 
+  getPostsByVideoID = async (videoID: string) => {
+    return await this.postRepository.getPostsByVideoID(videoID);
+  };
+
   createPost = async (postData: any): Promise<PostModel> => {
-    if (!postData.content || !postData.user_id || !postData.thread_id) {
+    if (!postData.content || !postData.user_id) {
       throw new Error("Missing fields");
     }
     const postID = uuidv4();
@@ -23,6 +27,7 @@ export default class PostServices {
       postData.user_id,
       postData.thread_id,
       postData.post_id, 
+      postData.video_id,
       postVotes
     );
     return await this.postRepository.createPost(newPost);

@@ -16,9 +16,20 @@ export default class PostController {
     }
   };
 
+  getPostsByVideoID = async (req: Request, res: Response) => {
+    try {
+      const { videoID } = req.params;
+      const posts = await this.postServices.getPostsByVideoID(videoID);
+      res.status(200).json({ data: posts });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   createPost = async (req: Request, res: Response) => {
     try {
       const postData = req.body;
+      console.log(postData)
       const createdPost = await this.postServices.createPost(postData);
       res.status(201).json({ data: createdPost });
     } catch (error: any) {

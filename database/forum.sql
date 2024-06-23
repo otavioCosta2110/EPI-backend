@@ -21,14 +21,16 @@ CREATE TABLE posts (
     id VARCHAR(255) PRIMARY KEY,
     content TEXT NOT NULL,
     user_id VARCHAR(255) NOT NULL,
-    thread_id VARCHAR(255) NOT NULL,
+    thread_id VARCHAR(255),
     post_id VARCHAR(255) DEFAULT NULL,
+    video_id VARCHAR(255) DEFAULT NULL,
     votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (thread_id) REFERENCES threads(id)
+    FOREIGN KEY (thread_id) REFERENCES threads(id),
+    FOREIGN KEY (video_id) REFERENCES videos(id)
 );
 
 CREATE TABLE user_post_votes (
@@ -39,4 +41,3 @@ CREATE TABLE user_post_votes (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );
-ALTER TABLE POSTS ADD votes int DEFAULT 0;
