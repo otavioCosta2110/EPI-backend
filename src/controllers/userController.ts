@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import UserServices from '../services/userServices';
 import UserRepository from '../repositories/userRepositories';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import path from 'path';
 
 export default class UserController {
   userRepositories = new UserRepository();
@@ -42,22 +44,6 @@ export default class UserController {
       const id = req.query.id as string;
       const lastLogin = await this.userServices.getLastLogin(id);
       res.status(200).json({ data: lastLogin });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  };
-
-  getUserImage = async (req: Request, res: Response) => {
-    try {
-      const email = req.query.email as string;
-      if (!email) {
-        return res.status(400).json({ error: 'Email is required' });
-      }
-      const user = await this.userServices.getUserByEmail(email);
-      if (!user || !user.image_url) {
-        return res.status(404).json({ error: 'User or image not found' });
-      }
-      res.status(200).json({ data: user.image_url });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -141,6 +127,31 @@ export default class UserController {
       const { email, tag } = req.body;
       const removedTag = await this.userServices.removeTag(email, tag);
       res.status(200).json({ data: removedTag });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  getUserImage = async (req: Request, res: Response) => {
+    try {
+      const authHeader = req.headers['authorization'];
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new Error('Bearer token not found');
+      }
+      const token = authHeader.split(' ')[1];
+      const decoded = await this.userServices.loggedUser(token);
+
+      if (!decoded.email) {
+        throw new Error('Email not found in token');
+      }
+
+      const user = await this.userServices.getUserByEmail(decoded.email);
+      if (!user || !user.image_url) {
+        throw new Error('User or user image not found');
+      }
+
+      const imagePath = path.resolve(__dirname, '../../', user.image_url);
+      res.sendFile(imagePath);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
