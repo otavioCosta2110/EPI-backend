@@ -36,6 +36,11 @@ router.put('/updatename', userController.updateName);
 router.delete('/delete', userController.deleteUser);
 router.put('/removetag', userController.removeTag);
 router.get('/getuserimage', userController.getUserImage);
+router.put(
+  '/updateimage',
+  upload.single('image_url'),
+  userController.updateUserImage
+);
 
 router.use(
   '/user-images',

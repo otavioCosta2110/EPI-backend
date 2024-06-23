@@ -192,27 +192,27 @@ export default class UserServices {
     return removedTag;
   };
 
-  updateImage = async (email: string, imageUrl: string) => {
-    if (!email || !imageUrl) {
-      throw new Error('Missing fields');
-    }
-    if (isValidEmail(email) === false) {
-      throw new Error('Invalid email');
-    }
-    const user = await this.userRepository.getUserByEmail(email);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    const updatedUser = await this.userRepository.updateImage(email, imageUrl);
-    return updatedUser;
-  };
-
   getUserImage = async (email: string): Promise<string | null> => {
     const user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       throw new Error('User not found');
     }
     return user.image_url;
+  };
+
+  updateUserImage = async (email: string, imageUrl: string) => {
+    if (!email || !imageUrl) {
+      throw new Error('Missing fields');
+    }
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const updatedUser = await this.userRepository.updateUserImage(
+      email,
+      imageUrl
+    );
+    return updatedUser;
   };
 }
 
