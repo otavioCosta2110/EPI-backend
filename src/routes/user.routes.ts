@@ -29,13 +29,13 @@ router.get('/getuserbyemail', userController.getUserByEmail);
 router.get('/getuserbyid', userController.getUserById);
 router.post('/create', upload.single('image_url'), userController.createUser);
 router.post('/login', userController.login);
-router.get('/getuserimage', userController.getUserImage);
 router.get('/getlastlogin', userController.getLastLogin);
 router.get('/loggeduser', userController.loggedUser);
 router.put('/updatepassword', userController.updatePassword);
 router.put('/updatename', userController.updateName);
 router.delete('/delete', userController.deleteUser);
 router.put('/removetag', userController.removeTag);
+router.get('/getuserimage', userController.getUserImage);
 
 router.use(
   '/user-images',

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import UserModel from '../models/userModel';
 import bcrypt from 'bcrypt';
 import UserRepository from '../repositories/userRepositories';
@@ -105,9 +105,15 @@ export default class UserServices {
   };
 
   // aq ele verifica se o token ta valido
+
   loggedUser = async (token: string) => {
     try {
-      const decoded = jwt.verify(token, 'secret');
+      const decoded = jwt.verify(token, 'secret') as JwtPayload & {
+        email: string;
+      };
+      if (!decoded.email) {
+        throw new Error('Invalid token payload');
+      }
       return decoded;
     } catch (error) {
       throw new Error('Invalid token');
@@ -199,6 +205,14 @@ export default class UserServices {
     }
     const updatedUser = await this.userRepository.updateImage(email, imageUrl);
     return updatedUser;
+  };
+
+  getUserImage = async (email: string): Promise<string | null> => {
+    const user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user.image_url;
   };
 }
 
