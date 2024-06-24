@@ -54,10 +54,13 @@ export default class VideoController {
   deleteVideo = async (req: Request, res: Response) => {
     try {
       const videoID = req.body.id;
+      if (!videoID) {
+        return res.status(400).json({ error: 'Video ID is required' });
+      }
       await this.videoServices.deleteVideo(videoID);
       res.status(200).json({ message: 'Video deleted' });
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      res.status(404).json({ error: error.message });
     }
   };
 

@@ -10,6 +10,8 @@ CREATE TABLE videos (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+ALTER TABLE videos ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE;
+
 CREATE TABLE video_tags (
   video_id VARCHAR REFERENCES videos(id),
   tag_id VARCHAR REFERENCES tags(id),
