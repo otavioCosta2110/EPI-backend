@@ -56,7 +56,7 @@ export default class VideoRepository {
   search = async (name: string): Promise<VideoModel[]> => {
     const result = await pool.query(
       `
-      SELECT id FROM videos WHERE title ILIKE $1;
+      SELECT id FROM videos WHERE title ILIKE $1 AND is_deleted = FALSE;
     `,
       [`%${name}%`]
     );
