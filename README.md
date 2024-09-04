@@ -10,4 +10,6 @@
 - `git merge {branch1} {branch2}`: "junta" as branch1 e branch2
 - para mais informações, tem a [documentação oficial](https://git-scm.com/docs/git)
 
+legal esse commit de exemplo
+
 ### usar .env.example como base para criar .env
